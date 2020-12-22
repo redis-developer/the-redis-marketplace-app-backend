@@ -1,0 +1,1 @@
+FT.CREATE idx:project ON hash PREFIX 1 "project:" SCHEMA title TEXT SORTABLE description TEXT github_url TEXT language TAG sample_type TAG product TAG

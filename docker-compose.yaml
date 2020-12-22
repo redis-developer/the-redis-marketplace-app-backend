@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  # Start RediSearch and import data/indexes
+  redisearch:
+    build:
+      context: ./redisearch-db
+      dockerfile: Dockerfile
+    ports:
+      - "6379:6379"
