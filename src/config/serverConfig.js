@@ -13,6 +13,9 @@ const serverSchema = joiObjectRequired({
   port: joiInteger,
 });
 
-const serverConfig = joi.attempt(serverEnvs, serverSchema, joiOptions);
+const serverConfig = joi.attempt(serverEnvs, serverSchema, {
+  ...joiOptions,
+  convert: true,
+});
 
 module.exports = serverConfig;
