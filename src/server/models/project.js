@@ -2,11 +2,23 @@ const { asyncFtSearch, asyncHgetall } = require("./db");
 
 const projectIndexName = "idx:project";
 
-(async function () {
-  const searchRes = await asyncFtSearch(projectIndexName, {
-    queryString: "demonstrate",
+const listProjects = async ({ tags, sort, limit, offset }) => {
+  const queryString = tags.length > 0 ? tags.join(" ") : "*";
+
+  const projects = await asyncFtSearch(projectIndexName, {
+    queryString,
+    sort,
+    limit,
+    offset,
   });
-  console.log(searchRes);
-  const ads = await asyncHgetall("project:1");
-  console.log(ads);
-})();
+
+  return projects;
+};
+
+const getProject = (hashId) => asyncHgetall(hashId);
+
+module.exports = {
+  getProject,
+  listProjects,
+  projectIndexName,
+};

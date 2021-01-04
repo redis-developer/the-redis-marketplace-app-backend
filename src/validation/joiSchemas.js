@@ -9,9 +9,14 @@ const joiBooleanRequired = joi.boolean().required();
 const joiEmailRequired = joiStringRequired.email();
 const joiInteger = joi.number().integer();
 const joiIntegerRequired = joiInteger.required();
+const joiEnum = (enumValues) => joiString.valid(...enumValues);
 const joiEnumRequired = (enumValues) => joiStringRequired.valid(...enumValues);
-const joiArrayRequired = (items) => joi.array().items(items).required();
-const joiDateRequired = joiStringRequired.isoDate();
+const joiArrayNullable = (items) =>
+  joi
+    .array()
+    .items(...items)
+    .allow(null)
+    .single();
 
 module.exports = {
   joiObject,
@@ -21,9 +26,9 @@ module.exports = {
   joiEmailRequired,
   joiString,
   joiIntegerRequired,
+  joiEnum,
   joiEnumRequired,
   joiStringNullabe,
-  joiArrayRequired,
-  joiDateRequired,
+  joiArrayNullable,
   joiInteger,
 };
