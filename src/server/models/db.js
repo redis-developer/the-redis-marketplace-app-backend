@@ -47,7 +47,7 @@ const asyncFtSearch = async (
     searchParams.push(sort.field);
     searchParams.push(sort.direction || "ASC");
   }
-  console.log(searchParams);
+
   const searchResult = await ftSearch(searchParams);
   const [totalResults, ...rows] = searchResult;
   const formatedRows = formatQueryResult(rows, []);
