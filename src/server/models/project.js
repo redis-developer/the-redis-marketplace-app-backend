@@ -1,18 +1,19 @@
+const { projectFilters } = require("../../config");
+const { ResponseError } = require("../../utils");
 const {
   asyncFtSearch,
   asyncHgetall,
   asyncFtSugget,
   asyncFtSugadd,
+  client,
 } = require("./db");
-
-const { ResponseError } = require("../../utils");
 
 const projectIndexName = "idx:project";
 const appNameDictName = "auto:projects:app_name";
 const descriptionDictName = "auto:projects:description";
 
-const listProjects = async ({ tags, sort, limit, offset }) => {
-  const queryString = tags.length > 0 ? tags.join(" ") : "*";
+const listProjects = async ({ filter, sort, limit, offset }) => {
+  const queryString = filter.length > 0 ? filter.join(" ") : "*";
 
   const projects = await asyncFtSearch(projectIndexName, {
     queryString,
@@ -46,10 +47,33 @@ const incrSuggestionWeight = async ({ dictonary, term }) => {
   return asyncFtSugadd(dictonary, term, true);
 };
 
+const getProjectFilters = async () => {
+  const listOfFilters = await new Promise((resolve, reject) => {
+    client
+      .multi(projectFilters.map((filter) => ["LRANGE", filter, 0, -1]))
+      .exec((err, filters) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(filters);
+        }
+      });
+  });
+
+  return listOfFilters.reduce(
+    (prev, curr, i) => ({
+      ...prev,
+      ...{ [projectFilters[i]]: curr },
+    }),
+    {}
+  );
+};
+
 module.exports = {
   getProject,
   listProjects,
   getProjectSuggestions,
+  getProjectFilters,
   incrSuggestionWeight,
   projectIndexName,
   appNameDictName,

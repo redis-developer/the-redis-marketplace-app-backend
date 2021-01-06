@@ -2,16 +2,32 @@ const redis = require("redis");
 const redisearch = require("redis-redisearch");
 const { promisify } = require("util");
 
+const logger = require("../../logger");
 const { redisDbUrl } = require("../../config");
 
+// Establish connection and add Redisearch commands
 redisearch(redis);
 redis.addCommand("ft.sugadd");
 const client = redis.createClient(redisDbUrl);
+
+client.on("error", (err) => {
+  logger.error(err, "RedisClient ERROR:");
+});
+
+client.on("connect", () => {
+  logger.info("RedisClient: Connection established");
+});
 
 const hgetall = promisify(client.hgetall).bind(client);
 const ftSearch = promisify(client.ft_search).bind(client);
 const ftSugget = promisify(client.ft_sugget).bind(client);
 const ftSugadd = promisify(client.ft_sugadd).bind(client);
+
+// GET hash by id
+const asyncHgetall = async (hashId) => {
+  const hash = await hgetall(hashId);
+  return { id: hashId, ...hash };
+};
 
 // Transform a redis hash to key value pairs
 const createRowData = ([key, value, ...rest], hash) => {
@@ -20,7 +36,13 @@ const createRowData = ([key, value, ...rest], hash) => {
   }
 
   const newField = {};
-  newField[key] = value;
+  try {
+    const objectValue = JSON.parse(value);
+    newField[key] = objectValue;
+  } catch (_) {
+    newField[key] = value;
+  }
+
   return createRowData(rest, { ...hash, ...newField });
 };
 
@@ -33,6 +55,7 @@ const formatQueryResult = ([id, score, row, ...rest], rows) => {
   return formatQueryResult(rest, [...rows, hash]);
 };
 
+// Run a Redisearch query
 const asyncFtSearch = async (
   indexName,
   { offset, limit, sort, queryString }
@@ -58,11 +81,6 @@ const asyncFtSearch = async (
   return { totalResults, rows: formatedRows };
 };
 
-const asyncHgetall = async (hashId) => {
-  const hash = await hgetall(hashId);
-  return { id: hashId, ...hash };
-};
-
 // Transform a redis suggestion output to object array
 const createSuggestionData = (
   [suggestion, score, ...rest],
@@ -77,6 +95,7 @@ const createSuggestionData = (
   return createSuggestionData(rest, newData, defaultFields);
 };
 
+// Retrive a suggestion from a Redisearch suggestion dictonary
 const asyncFtSugget = async (dictonary, searchText, max, fuzzy) => {
   const queryString = [dictonary, searchText];
 
@@ -98,6 +117,7 @@ const asyncFtSugget = async (dictonary, searchText, max, fuzzy) => {
     : [];
 };
 
+// Add an element to a Redisearch suggestion dictonary
 const asyncFtSugadd = async (dictonary, term, increase) => {
   const queryString = [dictonary, term, 1];
   if (increase) {

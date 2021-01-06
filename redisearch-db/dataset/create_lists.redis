@@ -1,0 +1,4 @@
+rpush redis_commands FT.SEARCH FT.SUGADD FT.SUGGET HGETALL
+rpush redis_modules Redis Redisearch RedisJSON RedisGraph RedisAI
+rpush redis_features caching search query autocomplete
+rpush special_tags Hackathon Paid 
