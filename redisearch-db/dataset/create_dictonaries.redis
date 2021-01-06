@@ -1,0 +1,15 @@
+FT.SUGADD auto:projects:app_name "Dumy App 1" 1
+FT.SUGADD auto:projects:app_name "Dumy App 2" 1
+FT.SUGADD auto:projects:app_name "Dumy App 3" 1
+FT.SUGADD auto:projects:app_name "Dumy App 4" 1
+FT.SUGADD auto:projects:app_name "Dumy App 5" 1
+FT.SUGADD auto:projects:app_name "Dumy App 6" 1
+FT.SUGADD auto:projects:app_name "Dumy App 7" 1
+FT.SUGADD auto:projects:description "Some random description for this particular project 1" 1
+FT.SUGADD auto:projects:description "Some random description for this particular project 2" 1
+FT.SUGADD auto:projects:description "Some random description for this particular project 3" 1
+FT.SUGADD auto:projects:description "Some random description for this particular project 4" 1
+FT.SUGADD auto:projects:description "Some random description for this particular project 5" 1
+FT.SUGADD auto:projects:description "Some random description for this particular project 6" 1
+FT.SUGADD auto:projects:description "Some random description for this particular project 7" 1
+FT.SUGADD auto:projects:description "Some random description for this particular project 8" 1

@@ -18,8 +18,6 @@ const {
 
 const { joiObjectRequired } = joiSchemas;
 
-const getProjectsEndpoint = "/projects";
-
 const getProjectsHandler = async (req, res, next) => {
   try {
     // This will be changed based on the actual searchable tags
@@ -58,4 +56,4 @@ const getProjectsHandler = async (req, res, next) => {
   }
 };
 
-module.exports = { getProjectsEndpoint, getProjectsHandler };
+module.exports = getProjectsHandler;
