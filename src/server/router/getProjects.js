@@ -44,10 +44,13 @@ const getProjectsHandler = async (req, res, next) => {
 
     const sort = { field: sortBy || "app_name", direction: sortDirection };
 
-    const textFilters = [
-      appName && `@app_name:${appName}`,
-      description && `@description:${description}`,
-    ].join(" ");
+    const textFilters = [];
+    if (appName) {
+      textFilters.push(`@app_name:${appName}`);
+    }
+    if (description) {
+      textFilters.push(`@description:${description}`);
+    }
 
     const tags = _map(
       tagParams,
@@ -58,7 +61,7 @@ const getProjectsHandler = async (req, res, next) => {
       limit,
       offset,
       sort,
-      filter: [...tags, textFilters],
+      filter: [...tags, ...textFilters],
     });
 
     res.json(projects);
