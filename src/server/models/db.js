@@ -30,7 +30,7 @@ const asyncHgetall = async (hashId) => {
 };
 
 // Transform a redis hash to key value pairs
-const createRowData = ([key, value, ...rest], hash) => {
+const createRowData = ([key, value, ...rest], hash, arrayFields) => {
   if (!key) {
     return hash;
   }
@@ -40,19 +40,24 @@ const createRowData = ([key, value, ...rest], hash) => {
     const objectValue = JSON.parse(value);
     newField[key] = objectValue;
   } catch (_) {
-    newField[key] = value;
+    if (arrayFields.indexOf(key) > -1) {
+      newField[key] = value.split(", ");
+    } else {
+      newField[key] = value;
+    }
   }
 
-  return createRowData(rest, { ...hash, ...newField });
+  return createRowData(rest, { ...hash, ...newField }, arrayFields);
 };
 
 // Format the hash array returned from a redis search operation
-const formatQueryResult = ([id, score, row, ...rest], rows) => {
+const formatQueryResult = ([id, score, row, ...rest], rows, arrayFields) => {
   if (!id) {
     return rows;
   }
-  const hash = createRowData(row, { id, score });
-  return formatQueryResult(rest, [...rows, hash]);
+
+  const hash = createRowData(row, { id, score }, arrayFields);
+  return formatQueryResult(rest, [...rows, hash], arrayFields);
 };
 
 // Run a Redisearch query
@@ -76,9 +81,8 @@ const asyncFtSearch = async (
 
   const searchResult = await ftSearch(searchParams);
   const [totalResults, ...rows] = searchResult;
-  const formatedRows = formatQueryResult(rows, []);
 
-  return { totalResults, rows: formatedRows };
+  return { totalResults, rows };
 };
 
 // Transform a redis suggestion output to object array
@@ -129,6 +133,7 @@ const asyncFtSugadd = async (dictonary, term, increase) => {
 
 module.exports = {
   client,
+  formatQueryResult,
   asyncFtSearch,
   asyncHgetall,
   asyncFtSugget,

@@ -1,10 +1,11 @@
-const { projectFilters } = require("../../config");
+const { projectFilters, projectArrayFields } = require("../../config");
 const { ResponseError } = require("../../utils");
 const {
   asyncFtSearch,
   asyncHgetall,
   asyncFtSugget,
   asyncFtSugadd,
+  formatQueryResult,
   client,
 } = require("./db");
 
@@ -15,14 +16,15 @@ const descriptionDictName = "auto:projects:description";
 const listProjects = async ({ filter, sort, limit, offset }) => {
   const queryString = filter.length > 0 ? filter.join(" ") : "*";
 
-  const projects = await asyncFtSearch(projectIndexName, {
+  const { totalResults, rows } = await asyncFtSearch(projectIndexName, {
     queryString,
     sort,
     limit,
     offset,
   });
 
-  return projects;
+  const formatedRows = formatQueryResult(rows, [], projectArrayFields);
+  return { totalResults, rows: formatedRows };
 };
 
 const getProject = (hashId) => asyncHgetall(hashId);
