@@ -16,7 +16,7 @@ const descriptionDictName = "auto:projects:description";
 const listProjects = async ({ filter, sort, limit, offset }) => {
   const queryString = filter.length > 0 ? filter.join(" ") : "*";
 
-  const { totalResults, rows } = await asyncFtSearch(projectIndexName, {
+  const { rows, ...rest } = await asyncFtSearch(projectIndexName, {
     queryString,
     sort,
     limit,
@@ -24,7 +24,7 @@ const listProjects = async ({ filter, sort, limit, offset }) => {
   });
 
   const formatedRows = formatQueryResult(rows, [], projectArrayFields);
-  return { totalResults, rows: formatedRows };
+  return { ...rest, rows: formatedRows };
 };
 
 const getProject = (hashId) => asyncHgetall(hashId);

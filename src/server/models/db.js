@@ -67,22 +67,23 @@ const asyncFtSearch = async (
 ) => {
   const searchParams = [indexName, queryString, "WITHSCORES"];
 
-  if (offset || limit) {
-    searchParams.push("LIMIT");
-    searchParams.push(offset || 0);
-    searchParams.push(limit || 10);
-  }
+  const offsetValue = typeof offset === "undefined" ? 0 : offset;
+  const limitValue = typeof limit === "undefined" ? 10 : limit;
+
+  searchParams.push("LIMIT");
+  searchParams.push(offsetValue);
+  searchParams.push(limitValue);
 
   if (sort) {
     searchParams.push("SORTBY");
     searchParams.push(sort.field);
     searchParams.push(sort.direction || "ASC");
   }
-  console.log(searchParams);
+
   const searchResult = await ftSearch(searchParams);
   const [totalResults, ...rows] = searchResult;
 
-  return { totalResults, rows };
+  return { totalResults, offset: offsetValue, limit: limitValue, rows };
 };
 
 // Transform a redis suggestion output to object array
