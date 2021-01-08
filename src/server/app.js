@@ -1,6 +1,5 @@
 const express = require("express");
 const pino = require("express-pino-logger");
-// eslint-disable-next-line import/no-extraneous-dependencies
 const cors = require("cors");
 
 const logger = require("../logger");
