@@ -21,7 +21,7 @@ const getProjectsHandler = async (req, res, next) => {
       sortDirection: joiEnum(["ASC", "DESC"]),
       app_name: joiString,
       description: joiString,
-      language: joiString,
+      language: joiArrayNullable([joiString]),
       type: joiArrayNullable([joiString]),
       contributed_by: joiArrayNullable([joiString]),
       redis_commands: joiArrayNullable([joiString]),
