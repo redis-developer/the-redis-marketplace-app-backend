@@ -54,7 +54,10 @@ const getProjectsHandler = async (req, res, next) => {
 
     const tags = _map(
       tagParams,
-      (values, key) => `@${key}:{${values.join(" | ").replace(".", "\\.")}}` // This might need update once we know all the possible escape characters
+      (values, key) =>
+        `@${key}:{${values
+          .join(" | ")
+          .replace(/[#.*+?^${}()|[\]\\]/g, "\\$&")}}`
     ).flat();
 
     const projects = await listProjects({
