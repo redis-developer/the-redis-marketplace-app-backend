@@ -57,7 +57,7 @@ const getProjectsHandler = async (req, res, next) => {
       (values, key) =>
         `@${key}:{${values
           .join(" | ")
-          .replace(/[#.*+?^${}()|[\]\\]/g, "\\$&")}}`
+          .replace(/[:!@#.*+?^${}()|[\]\\]/g, "\\$&")}}`
     ).flat();
 
     const projects = await listProjects({
