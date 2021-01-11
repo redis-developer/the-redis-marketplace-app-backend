@@ -43,6 +43,10 @@ const getProjectsHandler = async (req, res, next) => {
 
     const sort = { field: sortBy || "app_name", direction: sortDirection };
 
+    const textFilters = textFilter
+      ? [`@app_name|description:"${textFilter}"`]
+      : [];
+
     const tags = _map(
       tagParams,
       (values, key) =>
@@ -55,7 +59,7 @@ const getProjectsHandler = async (req, res, next) => {
       limit,
       offset,
       sort,
-      filter: [...tags, `@app_name|description:"${textFilter}"`],
+      filter: [...tags, ...textFilters],
     });
 
     res.json(projects);
