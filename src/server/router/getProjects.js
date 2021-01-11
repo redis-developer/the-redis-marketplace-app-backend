@@ -19,8 +19,7 @@ const getProjectsHandler = async (req, res, next) => {
       offset: joiInteger,
       sortBy: joiStringNullabe,
       sortDirection: joiEnum(["ASC", "DESC"]),
-      app_name: joiString,
-      description: joiString,
+      text_filter: joiString,
       language: joiArrayNullable([joiString]),
       type: joiArrayNullable([joiString]),
       contributed_by: joiArrayNullable([joiString]),
@@ -35,7 +34,7 @@ const getProjectsHandler = async (req, res, next) => {
       sortDirection,
       offset,
       limit,
-      app_name: appName,
+      text_filter: textFilter,
       description,
       ...tagParams
     } = await validateInput(req.query, queryParamSchema, {
@@ -43,14 +42,6 @@ const getProjectsHandler = async (req, res, next) => {
     });
 
     const sort = { field: sortBy || "app_name", direction: sortDirection };
-
-    const textFilters = [];
-    if (appName) {
-      textFilters.push(`@app_name:${appName}`);
-    }
-    if (description) {
-      textFilters.push(`@description:${description}`);
-    }
 
     const tags = _map(
       tagParams,
@@ -64,7 +55,7 @@ const getProjectsHandler = async (req, res, next) => {
       limit,
       offset,
       sort,
-      filter: [...tags, ...textFilters],
+      filter: [...tags, `@app_name|description:"${textFilter}"`],
     });
 
     res.json(projects);
