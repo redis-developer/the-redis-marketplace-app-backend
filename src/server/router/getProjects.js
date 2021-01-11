@@ -56,10 +56,10 @@ const getProjectsHandler = async (req, res, next) => {
       tagParams,
       (values, key) =>
         `@${key}:{${values
-          .join(" | ")
-          .replace(/[:!@#.*+?^${}()|[\]\\]/g, "\\$&")}}`
+          .map((value) => value.replace(/[:!@#.*+?^${}()|[\]\\]/g, "\\$&"))
+          .join(" | ")}}`
     ).flat();
-
+    console.log(tags);
     const projects = await listProjects({
       limit,
       offset,
