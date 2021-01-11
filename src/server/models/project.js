@@ -37,7 +37,8 @@ const getProjectSuggestions = async ({ searchText, max, fuzzy }) => {
 
   return suggestions
     .flat()
-    .sort(({ score: scoreA }, { score: scoreB }) => scoreB - scoreA);
+    .sort(({ score: scoreA }, { score: scoreB }) => scoreB - scoreA)
+    .slice(0, max || 5);
 };
 
 const incrSuggestionWeight = async ({ dictonary, term }) => {

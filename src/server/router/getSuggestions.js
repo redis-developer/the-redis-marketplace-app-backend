@@ -11,7 +11,7 @@ const { joiObjectRequired } = joiSchemas;
 const getSuggestionsHandler = async (req, res, next) => {
   try {
     const queryParamSchema = joiObjectRequired({
-      search_text: joiStringRequired,
+      search_text: joiStringRequired.min(3),
       max: joiInteger,
       fuzzy: joiBoolean,
     });
