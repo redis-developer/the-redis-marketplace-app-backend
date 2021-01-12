@@ -5,6 +5,7 @@ const { joiSchemas, validateInput } = require("../../validation");
 const {
   joiString,
   joiInteger,
+  joiBoolean,
   joiStringNullabe,
   joiArrayNullable,
   joiEnum,
@@ -21,6 +22,7 @@ const getProjectsHandler = async (req, res, next) => {
       sortDirection: joiEnum(["ASC", "DESC"]),
       text_filter: joiString,
       language: joiArrayNullable([joiString]),
+      quick_deploy: joiArrayNullable([joiBoolean]),
       type: joiArrayNullable([joiString]),
       contributed_by: joiArrayNullable([joiString]),
       redis_commands: joiArrayNullable([joiString]),
@@ -51,9 +53,11 @@ const getProjectsHandler = async (req, res, next) => {
       tagParams,
       (values, key) =>
         `@${key}:{${values
-          .map((value) => value.replace(/[:!@#.*+?^${}()|[\]\\]/g, "\\$&"))
+          .map((value) =>
+            String(value).replace(/[:!@#.*+?^${}()|[\]\\]/g, "\\$&")
+          )
           .join(" | ")}}`
-    ).flat();
+    );
 
     const projects = await listProjects({
       limit,
