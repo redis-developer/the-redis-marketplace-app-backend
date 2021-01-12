@@ -1,31 +1,8 @@
-const redis = require("redis");
-const redisearch = require("redis-redisearch");
-const { promisify } = require("util");
-
-const logger = require("../../logger");
-const { redisDbUrl } = require("../../config");
-
-// Establish connection and add Redisearch commands
-redisearch(redis);
-redis.addCommand("ft.sugadd");
-const client = redis.createClient(redisDbUrl);
-
-client.on("error", (err) => {
-  logger.error(err, "RedisClient ERROR:");
-});
-
-client.on("connect", () => {
-  logger.info("RedisClient: Connection established");
-});
-
-const hgetall = promisify(client.hgetall).bind(client);
-const ftSearch = promisify(client.ft_search).bind(client);
-const ftSugget = promisify(client.ft_sugget).bind(client);
-const ftSugadd = promisify(client.ft_sugadd).bind(client);
+const client = require("./client.js");
 
 // GET hash by id
 const asyncHgetall = async (hashId) => {
-  const hash = await hgetall(hashId);
+  const hash = await client.hgetall(hashId);
   return { id: hashId, ...hash };
 };
 
@@ -80,7 +57,7 @@ const asyncFtSearch = async (
     searchParams.push(sort.direction || "ASC");
   }
 
-  const searchResult = await ftSearch(searchParams);
+  const searchResult = await client.ftSearch(searchParams);
   const [totalResults, ...rows] = searchResult;
 
   return { totalResults, offset: offsetValue, limit: limitValue, rows };
@@ -101,7 +78,7 @@ const createSuggestionData = (
 };
 
 // Retrive a suggestion from a Redisearch suggestion dictonary
-const asyncFtSugget = async (dictonary, searchText, max, fuzzy) => {
+const asyncFtSugget = async ({ dictonary, searchText, max, fuzzy }) => {
   const queryString = [dictonary, searchText];
 
   if (fuzzy) {
@@ -115,7 +92,7 @@ const asyncFtSugget = async (dictonary, searchText, max, fuzzy) => {
 
   queryString.push("WITHSCORES");
 
-  const suggestions = await ftSugget(queryString);
+  const suggestions = await client.ftSugget(queryString);
   const field = dictonary.split(":")[2];
   return suggestions
     ? createSuggestionData(suggestions, [], { dictonary, field })
@@ -123,17 +100,17 @@ const asyncFtSugget = async (dictonary, searchText, max, fuzzy) => {
 };
 
 // Add an element to a Redisearch suggestion dictonary
-const asyncFtSugadd = async (dictonary, term, increase) => {
+const asyncFtSugadd = async ({ dictonary, term, increase }) => {
   const queryString = [dictonary, term, 1];
   if (increase) {
     queryString.push("INCR");
   }
 
-  return ftSugadd(queryString);
+  return client.ftSugadd(queryString);
 };
 
 module.exports = {
-  client,
+  client: client.client,
   formatQueryResult,
   asyncFtSearch,
   asyncHgetall,

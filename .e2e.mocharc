@@ -1,0 +1,5 @@
+{
+  "extends": ".mocharc",
+  "timeout": 10000,
+  "spec": "./src/**/*.e2e.js"
+}

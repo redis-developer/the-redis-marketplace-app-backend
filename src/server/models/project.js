@@ -1,38 +1,31 @@
 const { projectFilters, projectArrayFields } = require("../../config");
 const { ResponseError } = require("../../utils");
-const {
-  asyncFtSearch,
-  asyncHgetall,
-  asyncFtSugget,
-  asyncFtSugadd,
-  formatQueryResult,
-  client,
-} = require("./db");
+const db = require("./db");
 
 const projectIndexName = "idx:project";
 const appNameDictName = "auto:projects:app_name";
-const descriptionDictName = "auto:projects:description";
+const descDictName = "auto:projects:description";
 
 const listProjects = async ({ filter, sort, limit, offset }) => {
   const queryString = filter.length > 0 ? filter.join(" ") : "*";
 
-  const { rows, ...rest } = await asyncFtSearch(projectIndexName, {
+  const { totalResults, rows } = await db.asyncFtSearch(projectIndexName, {
     queryString,
     sort,
     limit,
     offset,
   });
 
-  const formatedRows = formatQueryResult(rows, [], projectArrayFields);
-  return { ...rest, rows: formatedRows };
+  const formatedRows = db.formatQueryResult(rows, [], projectArrayFields);
+  return { totalResults, rows: formatedRows };
 };
 
-const getProject = (hashId) => asyncHgetall(hashId);
+const getProject = (hashId) => db.asyncHgetall(hashId);
 
 const getProjectSuggestions = async ({ searchText, max, fuzzy }) => {
   const suggestions = await Promise.all([
-    asyncFtSugget(appNameDictName, searchText, max, fuzzy),
-    asyncFtSugget(descriptionDictName, searchText, max, fuzzy),
+    db.asyncFtSugget({ dictonary: appNameDictName, searchText, max, fuzzy }),
+    db.asyncFtSugget({ dictonary: descDictName, searchText, max, fuzzy }),
   ]);
 
   return suggestions
@@ -42,17 +35,22 @@ const getProjectSuggestions = async ({ searchText, max, fuzzy }) => {
 };
 
 const incrSuggestionWeight = async ({ dictonary, term }) => {
-  const suggestions = await asyncFtSugget(dictonary, term, 1);
+  const suggestions = await db.asyncFtSugget({
+    dictonary,
+    searchText: term,
+    max: 1,
+  });
+
   if (suggestions.length === 0) {
     throw new ResponseError("Incorrect dictonary and term pair", 422);
   }
 
-  return asyncFtSugadd(dictonary, term, true);
+  return db.asyncFtSugadd({ dictonary, term, increase: true });
 };
 
 const getProjectFilters = async () => {
   const listOfFilters = await new Promise((resolve, reject) => {
-    client
+    db.client
       .multi(projectFilters.map((filter) => ["LRANGE", filter, 0, -1]))
       .exec((err, filters) => {
         if (err) {
@@ -80,5 +78,5 @@ module.exports = {
   incrSuggestionWeight,
   projectIndexName,
   appNameDictName,
-  descriptionDictName,
+  descDictName,
 };

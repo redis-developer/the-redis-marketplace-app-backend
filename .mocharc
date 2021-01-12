@@ -1,0 +1,7 @@
+{
+  "recursive": true,
+  "exit": true,
+  "require": [
+    "dotenv/config"
+  ]
+}
