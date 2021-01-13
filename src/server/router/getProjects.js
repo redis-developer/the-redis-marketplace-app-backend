@@ -21,6 +21,7 @@ const getProjectsHandler = async (req, res, next) => {
       sortBy: joiStringNullabe,
       sortDirection: joiEnum(["ASC", "DESC"]),
       text_filter: joiString,
+      verticals: joiArrayNullable([joiString]),
       language: joiArrayNullable([joiString]),
       quick_deploy: joiArrayNullable([joiBoolean]),
       type: joiArrayNullable([joiString]),

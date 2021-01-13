@@ -21,6 +21,13 @@ describe("GET /projects/filters", () => {
       redis_commands: ["FT.SEARCH", "FT.SUGADD", "FT.SUGGET", "HGETALL"],
       redis_features: ["caching", "search", "query", "autocomplete"],
       special_tags: ["Hackathon", "Paid"],
+      verticals: [
+        "Healthcare",
+        "Oil & gas",
+        "Real estate",
+        "Financial",
+        "Tourism",
+      ],
     });
   });
 });

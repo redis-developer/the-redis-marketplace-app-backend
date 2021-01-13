@@ -241,7 +241,13 @@ describe("Projects model file", () => {
     });
 
     it("should return an object with the projectFilters keys and multi operation responses", async () => {
-      execStub.yields(null, [["Redis"], ["FT.SEARCH"], ["caching"], ["Paid"]]);
+      execStub.yields(null, [
+        ["Redis"],
+        ["FT.SEARCH"],
+        ["caching"],
+        ["Paid"],
+        ["Healthcare"],
+      ]);
 
       const filters = await reviredProjectModel.getProjectFilters();
       expect(filters).to.eql({
@@ -249,6 +255,7 @@ describe("Projects model file", () => {
         redis_commands: ["FT.SEARCH"],
         redis_features: ["caching"],
         special_tags: ["Paid"],
+        verticals: ["Healthcare"],
       });
     });
   });

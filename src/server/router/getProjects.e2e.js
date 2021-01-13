@@ -37,7 +37,9 @@ describe("GET /projects", () => {
 
     const bodySchema = joiArrayNullable([
       joiObjectRequired({
-        language: joiStringRequired.regex(/Javascript|Python/),
+        language: joiArrayNullable([
+          joiStringRequired.regex(/Javascript|Python/),
+        ]),
         redis_commands: joiArrayNullable([
           joiStringRequired.regex(/FT.SEARCH/),
         ]),

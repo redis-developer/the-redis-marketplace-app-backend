@@ -8,6 +8,7 @@ const projectFilters = [
   "redis_commands",
   "redis_features",
   "special_tags",
+  "verticals",
 ];
 
 const projectArrayFields = [
@@ -16,6 +17,8 @@ const projectArrayFields = [
   "redis_commands",
   "redis_features",
   "special_tags",
+  "language",
+  "verticals",
 ];
 
 module.exports = {
