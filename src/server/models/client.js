@@ -3,7 +3,9 @@ const redisearch = require("redis-redisearch");
 const util = require("util");
 
 const logger = require("../../logger");
-const { redisDbUrl } = require("../../config");
+const { dbConfig } = require("../../config");
+
+const { redisDbUrl } = dbConfig;
 
 // Establish connection and add Redisearch commands
 redisearch(redis);
