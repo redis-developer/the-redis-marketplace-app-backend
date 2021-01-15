@@ -26,7 +26,24 @@ const listProjects = async ({ filter, sort, highlight, limit, offset }) => {
   return { ...rest, executeTime, rows: formatedRows };
 };
 
-const getProject = (hashId) => db.asyncHgetall(hashId);
+const getProject = async (hashId) => {
+  const hash = await db.asyncHgetall(hashId);
+
+  return Object.entries(hash).reduce((prev, [key, value]) => {
+    const newField = {};
+    try {
+      const objectValue = JSON.parse(value);
+      newField[key] = objectValue;
+    } catch (_) {
+      if (projectArrayFields.indexOf(key) > -1) {
+        newField[key] = value.split(", ");
+      } else {
+        newField[key] = value;
+      }
+    }
+    return { ...prev, ...newField };
+  }, {});
+};
 
 const getProjectSuggestions = async ({ searchText, max, fuzzy }) => {
   const suggestions = await Promise.all([

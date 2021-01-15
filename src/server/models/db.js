@@ -115,6 +115,7 @@ const asyncFtSugadd = async ({ dictonary, term, increase }) => {
 
 module.exports = {
   client: client.client,
+  createRowData,
   formatQueryResult,
   asyncFtSearch,
   asyncHgetall,
