@@ -1,6 +1,6 @@
 const { getProjectFilters } = require("../models/project");
 
-const getFilters = async (req, res, next) => {
+const getFiltersHandler = async (req, res, next) => {
   try {
     const filters = await getProjectFilters();
     res.json(filters);
@@ -9,4 +9,4 @@ const getFilters = async (req, res, next) => {
   }
 };
 
-module.exports = getFilters;
+module.exports = getFiltersHandler;
