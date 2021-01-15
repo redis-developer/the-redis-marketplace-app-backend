@@ -5,7 +5,7 @@ const execTimeLogger = async (execFunction) => {
 
   const startTime = new Date();
   const functionResponse = await execFunction();
-  const executeTime = (Date.now() - startTime) / 1000;
+  const executeTime = (new Date() - startTime) / 1000;
 
   return { executeTime, functionResponse };
 };
