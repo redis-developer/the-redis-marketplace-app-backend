@@ -40,7 +40,7 @@ const formatQueryResult = ([id, score, row, ...rest], rows, arrayFields) => {
 // Run a Redisearch query
 const asyncFtSearch = async (
   indexName,
-  { offset, limit, sort, queryString }
+  { offset, limit, highlight, sort, queryString }
 ) => {
   const searchParams = [indexName, queryString, "WITHSCORES"];
 
@@ -50,6 +50,10 @@ const asyncFtSearch = async (
   searchParams.push("LIMIT");
   searchParams.push(offsetValue);
   searchParams.push(limitValue);
+
+  if (highlight) {
+    searchParams.push("HIGHLIGHT");
+  }
 
   if (sort) {
     searchParams.push("SORTBY");

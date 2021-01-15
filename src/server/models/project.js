@@ -1,23 +1,29 @@
 const { projectFilters, projectArrayFields } = require("../../config");
-const { ResponseError } = require("../../utils");
+const utils = require("../../utils");
 const db = require("./db");
+
+const { ResponseError } = utils;
 
 const projectIndexName = "idx:project";
 const appNameDictName = "auto:projects:app_name";
 const descDictName = "auto:projects:description";
 
-const listProjects = async ({ filter, sort, limit, offset }) => {
+const listProjects = async ({ filter, sort, highlight, limit, offset }) => {
   const queryString = filter.length > 0 ? filter.join(" ") : "*";
 
-  const { totalResults, rows } = await db.asyncFtSearch(projectIndexName, {
-    queryString,
-    sort,
-    limit,
-    offset,
-  });
+  const { executeTime, functionResponse } = await utils.execTimeLogger(() =>
+    db.asyncFtSearch(projectIndexName, {
+      queryString,
+      sort,
+      limit,
+      highlight,
+      offset,
+    })
+  );
 
+  const { rows, ...rest } = functionResponse;
   const formatedRows = db.formatQueryResult(rows, [], projectArrayFields);
-  return { totalResults, rows: formatedRows };
+  return { ...rest, executeTime, rows: formatedRows };
 };
 
 const getProject = (hashId) => db.asyncHgetall(hashId);

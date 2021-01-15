@@ -1,6 +1,7 @@
 const { map: _map } = require("lodash");
 
 const { listProjects } = require("../models/project");
+const { escapeQueryString } = require("../../utils");
 const { joiSchemas, validateInput } = require("../../validation");
 const {
   joiString,
@@ -16,11 +17,13 @@ const { joiObjectRequired } = joiSchemas;
 const getProjectsHandler = async (req, res, next) => {
   try {
     const queryParamSchema = joiObjectRequired({
+      fuzzy: joiBoolean,
+      highlight: joiBoolean,
       limit: joiInteger,
       offset: joiInteger,
       sortBy: joiStringNullabe,
       sortDirection: joiEnum(["ASC", "DESC"]),
-      text_filter: joiString,
+      text_filter: joiString.min(3),
       verticals: joiArrayNullable([joiString]),
       language: joiArrayNullable([joiString]),
       quick_deploy: joiArrayNullable([joiBoolean]),
@@ -37,34 +40,40 @@ const getProjectsHandler = async (req, res, next) => {
       sortDirection,
       offset,
       limit,
+      highlight,
+      fuzzy,
       text_filter: textFilter,
-      description,
       ...tagParams
     } = await validateInput(req.query, queryParamSchema, {
       convert: true,
     });
 
-    const sort = { field: sortBy || "app_name", direction: sortDirection };
+    const sort = sortBy && {
+      field: sortBy || "app_name",
+      direction: sortDirection,
+    };
 
-    const textFilters = textFilter
-      ? [`@app_name|description:"${textFilter}"`]
-      : [];
+    const filter = [];
+    if (textFilter) {
+      const queryText = escapeQueryString(textFilter);
+      const filterText = fuzzy ? `%${queryText}%` : `${queryText}*`;
+      filter.push(`@app_name|description:${filterText}`);
+    }
 
-    const tags = _map(
+    const tagFilters = _map(
       tagParams,
       (values, key) =>
         `@${key}:{${values
-          .map((value) =>
-            String(value).replace(/[:!@#.*+?^${}()|[\]\\]/g, "\\$&")
-          )
+          .map((value) => escapeQueryString(value))
           .join(" | ")}}`
     );
 
     const projects = await listProjects({
       limit,
       offset,
+      highlight,
       sort,
-      filter: [...tags, ...textFilters],
+      filter: [...filter, ...tagFilters],
     });
 
     res.json(projects);

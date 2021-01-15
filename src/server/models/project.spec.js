@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const sinon = require("sinon");
 const rw = require("rewire");
 
-const { ResponseError } = require("../../utils");
+const utils = require("../../utils");
 const db = require("./db");
 const { projectArrayFields, projectFilters } = require("../../config");
 const {
@@ -14,6 +14,8 @@ const {
   descDictName,
 } = require("./project");
 
+const { ResponseError } = utils;
+
 const sandbox = sinon.createSandbox();
 
 describe("Projects model file", () => {
@@ -24,6 +26,7 @@ describe("Projects model file", () => {
   describe("listProjects  function", () => {
     const offset = 1;
     const limit = 1;
+    const highlight = true;
     const sort = { field: "app_name", direction: "ASC" };
     const filter = ["@app_name:Dummy App 1"];
 
@@ -37,6 +40,7 @@ describe("Projects model file", () => {
         offset,
         limit,
         filter,
+        highlight,
       });
 
       await listProjects({
@@ -48,12 +52,12 @@ describe("Projects model file", () => {
 
       expect(asyncFtSearchStub.firstCall.args).to.eql([
         projectIndexName,
-        { limit, offset, sort, queryString: filter.join(" ") },
+        { limit, offset, sort, highlight, queryString: filter.join(" ") },
       ]);
 
       expect(asyncFtSearchStub.secondCall.args).to.eql([
         projectIndexName,
-        { limit, offset, sort, queryString: "*" },
+        { limit, offset, sort, queryString: "*", highlight: undefined },
       ]);
     });
 
@@ -78,11 +82,35 @@ describe("Projects model file", () => {
       ]);
     });
 
+    it("should call execTimeLogger with the appropriate arquments", async () => {
+      const rows = [1, 2, 3];
+      const totalResults = 3;
+      const executeTime = 1;
+      const execTimeLoggerStub = sandbox
+        .stub(utils, "execTimeLogger")
+        .returns({ executeTime, functionResponse: { totalResults, rows } });
+      sandbox.stub(db, "asyncFtSearch").returns({ rows });
+      sandbox.stub(db, "formatQueryResult").returns(rows);
+
+      await listProjects({
+        sort,
+        offset,
+        limit,
+        filter,
+      });
+
+      expect(typeof execTimeLoggerStub.firstCall.args[0]).to.eql("function");
+    });
+
     it("should return the result of formatQueryResult and totalResults", async () => {
       const rows = [1, 2, 3];
       const totalResults = 3;
+      const executeTime = 1;
       sandbox.stub(db, "asyncFtSearch").returns({ totalResults, rows: [] });
       sandbox.stub(db, "formatQueryResult").returns(rows);
+      sandbox
+        .stub(utils, "execTimeLogger")
+        .returns({ executeTime, functionResponse: { totalResults, rows } });
 
       const searchRes = await listProjects({
         sort,
@@ -91,7 +119,7 @@ describe("Projects model file", () => {
         filter,
       });
 
-      expect(searchRes).to.eql({ totalResults, rows });
+      expect(searchRes).to.eql({ totalResults, rows, executeTime });
     });
   });
 
