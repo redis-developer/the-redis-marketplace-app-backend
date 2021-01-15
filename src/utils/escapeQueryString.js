@@ -1,6 +1,6 @@
 const escapeQueryString = (queryString) =>
   String(queryString)
-    .replace(/[-[\]{}()<>*+%&?'".,:;!@\\^$|#\s]/g, "\\$&")
+    .replace(/[-[\]{}()<>*+%&?'".,:;!@\\^$|#]/g, "\\$&")
     .trim();
 
 module.exports = escapeQueryString;
