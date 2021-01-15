@@ -3,7 +3,7 @@ const client = require("./client.js");
 // GET hash by id
 const asyncHgetall = async (hashId) => {
   const hash = await client.hgetall(hashId);
-  return { id: hashId, ...hash };
+  return hash ? { id: hashId, ...hash } : {};
 };
 
 // Transform a redis hash to key value pairs
