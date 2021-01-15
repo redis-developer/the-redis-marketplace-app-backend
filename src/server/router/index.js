@@ -12,6 +12,6 @@ router.route("/projects").get(getProjectsHandler);
 router.route("/projects/suggestion").get(getSuggestionsHandler);
 router.route("/projects/suggestion").post(postSuggestionsHandler);
 router.route("/projects/filters").get(getFiltersHandler);
-router.route("/projects/:id").get(getProjectByIdHandler);
+router.route("/project/:id").get(getProjectByIdHandler);
 
 module.exports = router;
