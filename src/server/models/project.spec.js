@@ -7,6 +7,7 @@ const db = require("./db");
 const { projectArrayFields, projectFilters } = require("../../config");
 const {
   listProjects,
+  getProject,
   getProjectSuggestions,
   incrSuggestionWeight,
   projectIndexName,
@@ -285,6 +286,49 @@ describe("Projects model file", () => {
         special_tags: ["Paid"],
         verticals: ["Healthcare"],
       });
+    });
+  });
+
+  describe("getProject  function", () => {
+    it("should call asyncHgetall with the appropriate arquments", async () => {
+      const hashId = "1";
+      const asyncHgetallStub = sandbox.stub(db, "asyncHgetall").returns({});
+
+      await getProject(hashId);
+      expect(asyncHgetallStub.firstCall.args).to.eql([hashId]);
+    });
+
+    it("should call createRowData with the appropriate arquments", async () => {
+      const hashId = "1";
+      const createRowDataStub = sandbox.stub(db, "createRowData").returns({});
+      sandbox.stub(db, "asyncHgetall").returns({ id: hashId });
+
+      await getProject(hashId);
+      expect(createRowDataStub.firstCall.args).to.eql([
+        ["id", hashId],
+        {},
+        projectArrayFields,
+      ]);
+    });
+
+    it("should return a properly parsed hash object", async () => {
+      const hashId = "1";
+      sandbox.stub(db, "asyncHgetall").returns({
+        id: hashId,
+        score: "2",
+        redis_commands: "FT.SUGGET, FT.SUGADD",
+        deploy_buttons: '[{"heroku": "heroku"}]',
+      });
+
+      const project = await getProject(hashId);
+      expect(project.id).to.eql(1);
+      expect(project.score).to.eql(2);
+      expect(project.redis_commands).to.eql(["FT.SUGGET", "FT.SUGADD"]);
+      expect(project.deploy_buttons).to.eql([
+        {
+          heroku: "heroku",
+        },
+      ]);
     });
   });
 });

@@ -28,21 +28,7 @@ const listProjects = async ({ filter, sort, highlight, limit, offset }) => {
 
 const getProject = async (hashId) => {
   const hash = await db.asyncHgetall(hashId);
-
-  return Object.entries(hash).reduce((prev, [key, value]) => {
-    const newField = {};
-    try {
-      const objectValue = JSON.parse(value);
-      newField[key] = objectValue;
-    } catch (_) {
-      if (projectArrayFields.indexOf(key) > -1) {
-        newField[key] = value.split(", ");
-      } else {
-        newField[key] = value;
-      }
-    }
-    return { ...prev, ...newField };
-  }, {});
+  return db.createRowData(Object.entries(hash).flat(), {}, projectArrayFields);
 };
 
 const getProjectSuggestions = async ({ searchText, max, fuzzy }) => {
