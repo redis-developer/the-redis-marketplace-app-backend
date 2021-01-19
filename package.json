@@ -8,7 +8,8 @@
     "dev": "nodemon index",
     "test": "mocha --config .unit.mocharc",
     "test-e2e": "mocha --config .e2e.mocharc",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "crawler": "node -r dotenv/config ./src/scripts/crawler.js"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +36,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-pino-logger": "^5.0.0",
+    "graphql": "15.4.0",
+    "graphql-request": "3.4.0",
     "joi": "^17.3.0",
     "lodash": "^4.17.20",
     "pino": "^6.8.0",

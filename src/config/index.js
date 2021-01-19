@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const serverConfig = require("./serverConfig");
 const dbConfig = require("./dbConfig");
+const gitHubConfig = require("./gitHubConfig");
 
 const projectFilters = [
   "redis_modules",
@@ -26,4 +27,5 @@ module.exports = {
   projectFilters,
   serverConfig,
   dbConfig,
+  gitHubConfig,
 };

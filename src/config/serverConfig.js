@@ -1,7 +1,6 @@
 const joi = require("joi");
 
-const { joiOptions } = require("../validation");
-const { joiSchemas } = require("../validation");
+const { joiOptions, joiSchemas } = require("../validation");
 
 const { joiObjectRequired, joiInteger } = joiSchemas;
 
