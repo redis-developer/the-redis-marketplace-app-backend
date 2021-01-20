@@ -1,4 +1,5 @@
 const client = require("./client.js");
+const { fixHighlighting } = require("../../utils");
 
 // GET hash by id
 const asyncHgetall = async (hashId) => {
@@ -13,14 +14,16 @@ const createRowData = ([key, value, ...rest], hash, arrayFields) => {
   }
 
   const newField = {};
+  const escapedValue = String(value).replace(/\\/g, "");
+
   try {
-    const objectValue = JSON.parse(value);
+    const objectValue = JSON.parse(escapedValue);
     newField[key] = objectValue;
   } catch (_) {
     if (arrayFields.indexOf(key) > -1) {
-      newField[key] = value.split(", ");
+      newField[key] = escapedValue.split(", ").map(fixHighlighting);
     } else {
-      newField[key] = value;
+      newField[key] = fixHighlighting(escapedValue);
     }
   }
 

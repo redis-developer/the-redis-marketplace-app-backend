@@ -49,23 +49,20 @@ const getProjectsHandler = async (req, res, next) => {
     });
 
     const sort = sortBy && {
-      field: sortBy || "app_name",
+      field: sortBy,
       direction: sortDirection,
     };
 
     const filter = [];
     if (textFilter) {
-      const queryText = escapeQueryString(textFilter);
-      const filterText = fuzzy ? `%${queryText}%` : `${queryText}*`;
-      filter.push(`@app_name|description:${filterText}`);
+      const queryText = `'${escapeQueryString(textFilter)}*'`;
+      filter.push(queryText);
     }
 
     const tagFilters = _map(
       tagParams,
       (values, key) =>
-        `@${key}:{${values
-          .map((value) => escapeQueryString(value))
-          .join(" | ")}}`
+        `@${key}:${values.map((value) => escapeQueryString(value)).join(" | ")}`
     );
 
     const projects = await listProjects({

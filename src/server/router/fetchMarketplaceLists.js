@@ -12,7 +12,7 @@ const {
   lRange,
   lRem,
   removeRedisKey,
-} = require("../models/db");
+} = require("../models/client");
 
 const { joiOptions, joiSchemas } = require("../../validation");
 
@@ -26,13 +26,12 @@ const {
   joiArrayRequired,
 } = joiSchemas;
 
+const { escapeQueryString } = require("../../utils");
+
 const getRedisList = (key) => lRange(key, 0, -1);
 const removeFromRedisList = (key, element) => lRem(key, 0, element);
 const redisArrayDelimiter = ", ";
 const dictionaryPrefix = "auto:projects";
-
-const mockJsonString =
-  '{"app_name":"Basic Redis caching example in Nodejs","description":"Showcases how to impliment caching in NodeJS","type":"Building Block","contributed_by":"Redis Labs","repo_url":"https://github.com/redis-developer/basic-caching-demo-nodejs","download_url":"https://github.com/redis-developer/basic-caching-demo-nodejs/archive/main.zip","hosted_url":"","quick_deploy":"true","deploy_buttons":[{"heroku":"https://heroku.com/deploy?template=https://github.com/redis-developer/basic-caching-demo-nodejs"},{"vercel":"https://vercel.com/new/git/external?repository-url=https%3A%…20at%20least%20to%20connect%20to%20Redis%20clouding%20server"},{"Google":"https://deploy.cloud.run/?git_repo=https://github.com/redis-developer/basic-caching-demo-nodejs.git"}],"language":["JavaScript"],"redis_commands":["SETEX"],"redis_features":["caching"],"redis_modules":[],"app_image_urls":["https://github.com/redis-developer/basic-caching-demo-nodejs/blob/main/docs/screenshot001.png?raw=true"],"youtube_url":"","special_tags":[],"verticals":["Healthcare","Financial"],"markdown":"https://raw.githubusercontent.com/redislabs-training/redis-sitesearch/master/README.md"}';
 
 module.exports = async () => {
   const repoQuery = `query($login: String!, $after: String, $first: Int!) {
@@ -104,12 +103,7 @@ module.exports = async () => {
     repoEdges.forEach((repoEdge) => {
       const repoName = _get(repoEdge, "node.name", null);
 
-      // mock parse check
-      // const marketplaceJsonString = _get(repoEdge, "node.object.text", null);
-      let marketplaceJsonString = _get(repoEdge, "node.object.text", null);
-      if (marketplaceJsonString) {
-        marketplaceJsonString = mockJsonString;
-      }
+      const marketplaceJsonString = _get(repoEdge, "node.object.text", null);
 
       let jsonParseError;
       let parsedMarketplace;
@@ -224,17 +218,33 @@ module.exports = async () => {
       logger.info({ projectsToCreate });
 
       const projectHash = `project:${repoName}`;
+
       const mappedList = _omit(
         {
           ...list,
+          app_name: escapeQueryString(list.app_name),
+          description: escapeQueryString(list.description),
+          type: escapeQueryString(list.type),
+          contributed_by: escapeQueryString(list.contributed_by),
+          quick_deploy: escapeQueryString(list.quick_deploy),
           deploy_buttons: JSON.stringify(list.deploy_buttons),
           app_image_urls: JSON.stringify(list.app_image_urls),
-          language: list.language.join(redisArrayDelimiter),
-          redis_commands: list.redis_commands.join(redisArrayDelimiter),
-          redis_features: list.redis_features.join(redisArrayDelimiter),
-          redis_modules: list.redis_modules.join(redisArrayDelimiter),
-          special_tags: list.special_tags.join(redisArrayDelimiter),
-          verticals: list.verticals.join(redisArrayDelimiter),
+          language: escapeQueryString(list.language.join(redisArrayDelimiter)),
+          redis_commands: list.redis_commands
+            .map(escapeQueryString)
+            .join(redisArrayDelimiter),
+          redis_features: list.redis_features
+            .map(escapeQueryString)
+            .join(redisArrayDelimiter),
+          redis_modules: list.redis_modules
+            .map(escapeQueryString)
+            .join(redisArrayDelimiter),
+          special_tags: list.special_tags
+            .map(escapeQueryString)
+            .join(redisArrayDelimiter),
+          verticals: list.verticals
+            .map(escapeQueryString)
+            .join(redisArrayDelimiter),
         },
         "repoName"
       );

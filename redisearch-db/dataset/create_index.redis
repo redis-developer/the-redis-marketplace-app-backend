@@ -1,2 +1,2 @@
 FT.DROPINDEX idx:project DD 
-FT.CREATE idx:project ON hash PREFIX 1 "project:" SCORE_FIELD __score SCHEMA app_name TEXT WEIGHT 10 SORTABLE description TEXT WEIGHT 1 SORTABLE type TAG contributed_by TAG quick_deploy TAG language TAG redis_commands TAG redis_features TAG redis_modules TAG special_tags TAG verticals TAG
+FT.CREATE idx:project ON hash PREFIX 1 "project:" SCORE_FIELD __score SCHEMA app_name TEXT WEIGHT 10 SORTABLE description TEXT WEIGHT 1 SORTABLE type TEXT contributed_by TEXT quick_deploy TEXT language TEXT redis_commands TEXT WEIGHT 1.5 redis_features TEXT WEIGHT 1.5 redis_modules TEXT WEIGHT 1.5 special_tags TEXT verticals TEXT

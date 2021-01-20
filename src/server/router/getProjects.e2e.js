@@ -28,11 +28,11 @@ describe("GET /projects", () => {
   it("should return 200 and filter results based on tags", async () => {
     const language = ["Javascript", "Python"];
     // eslint-disable-next-line camelcase
-    const redis_commands = "FT.SEARCH";
+    const special_tags = "Paid";
 
     const { body } = await request
       .get(path)
-      .query({ language, redis_commands })
+      .query({ language, special_tags })
       .expect(200);
 
     const bodySchema = joiArrayNullable([
@@ -40,9 +40,7 @@ describe("GET /projects", () => {
         language: joiArrayNullable([
           joiStringRequired.regex(/Javascript|Python/),
         ]),
-        redis_commands: joiArrayNullable([
-          joiStringRequired.regex(/FT.SEARCH/),
-        ]),
+        special_tags: joiArrayNullable([joiStringRequired.regex(/Paid/)]),
       }).unknown(),
     ]);
 
