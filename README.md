@@ -7,7 +7,7 @@ To start the API run the following command:
 - `npm ci`
 - `docker-compose build`
 - `docker-compose up -d`
-- `npm run dev`
+- `npm run dev` or `npm start`
 
 ## CI
 
@@ -25,7 +25,6 @@ To start the API run the following command:
 
 - `username`: The user the personal access token belogns to.
 - `personal_access_token`: A token.
-- `npm run dev` or `npm start`
 
 ## OpenAPI documentation
 
