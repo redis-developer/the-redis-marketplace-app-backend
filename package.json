@@ -43,7 +43,9 @@
     "pino": "^6.8.0",
     "pino-pretty": "^4.3.0",
     "redis": "^3.0.2",
-    "redis-redisearch": "^1.0.1"
+    "redis-redisearch": "^1.0.1",
+    "swagger-jsdoc": "^6.0.1",
+    "swagger-ui-express": "^4.1.6"
   },
   "husky": {
     "hooks": {

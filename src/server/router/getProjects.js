@@ -17,7 +17,6 @@ const { joiObjectRequired } = joiSchemas;
 const getProjectsHandler = async (req, res, next) => {
   try {
     const queryParamSchema = joiObjectRequired({
-      fuzzy: joiBoolean,
       highlight: joiBoolean,
       limit: joiInteger,
       offset: joiInteger,
@@ -41,7 +40,6 @@ const getProjectsHandler = async (req, res, next) => {
       offset,
       limit,
       highlight,
-      fuzzy,
       text_filter: textFilter,
       ...tagParams
     } = await validateInput(req.query, queryParamSchema, {
