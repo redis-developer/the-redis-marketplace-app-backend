@@ -27,6 +27,7 @@ const {
 } = joiSchemas;
 
 const { escapeQueryString } = require("../../utils");
+const createDocumentation = require("./createDocumentation");
 
 const getRedisList = (key) => lRange(key, 0, -1);
 const removeFromRedisList = (key, element) => lRem(key, 0, element);
@@ -209,6 +210,9 @@ module.exports = async () => {
     const removeProjectPromises = projectsToRemove.map((projectName) =>
       removeRedisKey(`project:${projectName}`)
     );
+
+    // insert readme
+    await createDocumentation(marketplaceLists);
 
     // insert projects
     const projectInsertPromises = marketplaceLists.map((list) => {

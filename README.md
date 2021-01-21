@@ -14,10 +14,10 @@ To start the API run the following command:
 ### Trigger crawler with `POST` request
 
 ```sh
- curl \                                                                          -X POST \
+curl https://api.github.com/repos/RisingStack/redislab-marketplace-backend/dispatches \
+  -X POST \
   -u [username]:[personal_access_token] \
-  -H "Accept: application/vnd.github.v3+json" \
-  https://api.github.com/repos/RisingStack/redislab-marketplace-backend/dispatches  \
+  -H 'Accept: application/vnd.github.v3+json' \
   -d '{"event_type":"trigger-crawler"}'
 ```
 
