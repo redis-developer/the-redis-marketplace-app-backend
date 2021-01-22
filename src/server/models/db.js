@@ -21,7 +21,10 @@ const createRowData = ([key, value, ...rest], hash, arrayFields) => {
     newField[key] = objectValue;
   } catch (_) {
     if (arrayFields.indexOf(key) > -1) {
-      newField[key] = escapedValue.split(", ").map(fixHighlighting);
+      newField[key] =
+        escapedValue === ""
+          ? []
+          : escapedValue.split(", ").map(fixHighlighting);
     } else {
       newField[key] = fixHighlighting(escapedValue);
     }
