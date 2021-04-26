@@ -22,6 +22,7 @@ These secrets need to be set on the project level for the job to run.
   - PORT: A port to run the app. (`3000`)
   - REDIS_CONNECTION_STRING: A redis connection to a db where the projects are to be imported.
   - GITHUB_GRAPHQL_URL: https://api.github.com/graphql
+  - CRAWLER_LOGIN_NAME: Login name of the organisation to crawl.
 
 #### Docusaurus readme update based on https://github.com/RisingStack/redis-developer.github.io
 
