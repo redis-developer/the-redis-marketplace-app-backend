@@ -79,7 +79,7 @@ module.exports = async () => {
     special_tags: joiArrayNullable([joiStringNullabe]),
     verticals: joiArrayNullable([joiStringNullabe]),
     markdown: joiUriRequired,
-    status: joiBoolean,
+    hidden: joiBoolean,
   });
 
   let after = null;
@@ -123,17 +123,17 @@ module.exports = async () => {
         );
       }
 
-      const status = _get(parsedMarketplace, "status", false);
+      const hidden = _get(parsedMarketplace, "hidden", false);
 
-      if (parsedMarketplace && !status) {
+      if (parsedMarketplace && hidden) {
         // skip import
         logger.info(
           parsedMarketplace,
-          "Skipping marketplace file due to status: "
+          "Skipping marketplace file due to hidden status: "
         );
       }
 
-      if (parsedMarketplace && !jsonParseError && status) {
+      if (parsedMarketplace && !jsonParseError && !hidden) {
         const marketplaceValidation = marketplaceSchema.validate(
           parsedMarketplace,
           joiOptions
