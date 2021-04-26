@@ -171,6 +171,6 @@ The endpoint also supports a `highlight` query param, which adds the `HIGHLIGH` 
     }
   ],
   "special_tags": ["Paid"],
-  "hidden": fasle
+  "hidden": false
 }
 ```
