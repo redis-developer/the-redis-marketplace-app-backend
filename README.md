@@ -170,6 +170,7 @@ The endpoint also supports a `highlight` query param, which adds the `HIGHLIGH` 
       "Google": "https://deploy.cloud.run/?git_repo=https://github.com/redis-developer/basic-caching-demo-nodejs.git"
     }
   ],
-  "special_tags": ["Paid"]
+  "special_tags": ["Paid"],
+  "hidden": fasle
 }
 ```
