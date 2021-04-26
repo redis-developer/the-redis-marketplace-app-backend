@@ -11,6 +11,33 @@ To start the API run the following command:
 
 ## CI
 
+### Setup
+
+#### Project secrets
+
+These secrets need to be set on the project level for the job to run.
+
+  - DOCUSAURUS_REPOSITORY: A repository with a docusaurus project
+  - PERSONAL_ACCESS_TOKEN_GITHUB: A GitHub token to read and write to repositories.
+  - PORT: A port to run the app. (`3000`)
+  - REDIS_CONNECTION_STRING: A redis connection to a db where the projects are to be imported.
+  - GITHUB_GRAPHQL_URL: https://api.github.com/graphql
+
+#### Docusaurus readme update based on https://github.com/RisingStack/redis-developer.github.io
+
+These are the changes and concepts to the docusaurus repository necessary for the crawler to work:
+
+  - a `marketplace-sidebar.json` file in the project root
+  - `marketplace-sidebar.json` required in the `sidebars.js` file
+  - an entry to the `src/pages/index.js` file to create a link to the `marketplace` folder that the updater script creates
+
+The updater flow:
+
+  - the script creates a `marketplace` folder in `docs` and places the readme contents in `mdx` files with the appropriate headers into a simple structure like the `create` folder
+  - the corresponding sidebar entries will be added to the `marketplace-sidebar.json` file
+
+If there are no projects to document the `marketplace-sidebar.json` will contain an empty array, but it must exist. The link created on the index site will however not point to any documents in this solution, if no projects were included.
+
 ### Trigger crawler with `POST` request
 
 ```sh
@@ -21,10 +48,11 @@ curl https://api.github.com/repos/RisingStack/redislab-marketplace-backend/dispa
   -d '{"event_type":"trigger-crawler"}'
 ```
 
-### Variables
+Variables:
 
-- `username`: The user the personal access token belogns to.
-- `personal_access_token`: A token.
+- `username`: The user the personal access token belogns to
+- `personal_access_token`: A GitHub token
+
 
 ## OpenAPI documentation
 
