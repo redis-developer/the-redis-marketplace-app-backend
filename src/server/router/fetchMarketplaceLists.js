@@ -29,6 +29,7 @@ const {
 const { escapeQueryString } = require("../../utils");
 const createDocumentation = require("./createDocumentation");
 const { joiBoolean } = require("../../validation/joiSchemas");
+const { crawlerLoginName } = require("../../config/gitHubConfig");
 
 const getRedisList = (key) => lRange(key, 0, -1);
 const removeFromRedisList = (key, element) => lRem(key, 0, element);
@@ -92,7 +93,7 @@ module.exports = async () => {
   while (hasNextPage) {
     /* eslint-disable no-await-in-loop */
     const repoResponse = await gitHubGraphQlClient.request(repoQuery, {
-      login: "redis-developer",
+      login: crawlerLoginName,
       first,
       after,
     });

@@ -17,9 +17,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    env:
-      DOCUSAURUS_REPOSITORY: ${{ secrets.DOCUSAURUS_REPOSITORY }}
-      PERSONAL_ACCESS_TOKEN_GITHUB: ${{ secrets.PERSONAL_ACCESS_TOKEN_GITHUB }}
+    env: ${{ secrets }}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -55,9 +53,6 @@ jobs:
           echo "[]" > $DOCUSAURUS_REPOSITORY/marketplace-sidebar.json
 
       - name: Run script
-        env:
-          PORT: ${{ secrets.PORT }}
-          REDIS_CONNECTION_STRING: ${{ secrets.REDIS_CONNECTION_STRING }}
         run: |
           cd ./backend-repo
           npm ci
