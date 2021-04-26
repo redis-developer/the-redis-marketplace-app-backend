@@ -28,6 +28,7 @@ const {
 
 const { escapeQueryString } = require("../../utils");
 const createDocumentation = require("./createDocumentation");
+const { joiBoolean } = require("../../validation/joiSchemas");
 
 const getRedisList = (key) => lRange(key, 0, -1);
 const removeFromRedisList = (key, element) => lRem(key, 0, element);
@@ -78,6 +79,7 @@ module.exports = async () => {
     special_tags: joiArrayNullable([joiStringNullabe]),
     verticals: joiArrayNullable([joiStringNullabe]),
     markdown: joiUriRequired,
+    status: joiBoolean,
   });
 
   let after = null;
@@ -121,7 +123,17 @@ module.exports = async () => {
         );
       }
 
-      if (parsedMarketplace && !jsonParseError) {
+      const status = _get(parsedMarketplace, "status", false);
+
+      if (parsedMarketplace && !status) {
+        // skip import
+        logger.info(
+          parsedMarketplace,
+          "Skipping marketplace file due to status: "
+        );
+      }
+
+      if (parsedMarketplace && !jsonParseError && status) {
         const marketplaceValidation = marketplaceSchema.validate(
           parsedMarketplace,
           joiOptions
@@ -234,19 +246,19 @@ module.exports = async () => {
           deploy_buttons: JSON.stringify(list.deploy_buttons),
           app_image_urls: JSON.stringify(list.app_image_urls),
           language: escapeQueryString(list.language.join(redisArrayDelimiter)),
-          redis_commands: list.redis_commands
+          redis_commands: _get(list, "redis_commands", [])
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
-          redis_features: list.redis_features
+          redis_features: _get(list, "redis_features", [])
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
-          redis_modules: list.redis_modules
+          redis_modules: _get(list, "redis_modules", [])
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
-          special_tags: list.special_tags
+          special_tags: _get(list, "special_tags", [])
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
-          verticals: list.verticals
+          verticals: _get(list, "verticals", [])
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
         },
