@@ -23,11 +23,10 @@ const {
   joiUriRequired,
   joiUriNullable,
   joiArrayNullable,
-  joiArrayRequired,
 } = joiSchemas;
 
 const { escapeQueryString } = require("../../utils");
-const createDocumentation = require("./createDocumentation");
+// const createDocumentation = require("./createDocumentation");
 const { joiBoolean } = require("../../validation/joiSchemas");
 const { crawlerLoginName } = require("../../config/gitHubConfig");
 
@@ -70,7 +69,7 @@ module.exports = async () => {
     download_url: joiUriRequired,
     hosted_url: joiUriNullable,
     quick_deploy: joiStringRequired,
-    deploy_buttons: joiArrayRequired([joiObjectRequired()]),
+    deploy_buttons: joiArrayNullable([]),
     language: joiArrayNullable([joiStringNullabe]),
     redis_commands: joiArrayNullable([joiStringNullabe]),
     redis_features: joiArrayNullable([joiStringNullabe]),
@@ -139,6 +138,8 @@ module.exports = async () => {
           parsedMarketplace,
           joiOptions
         );
+
+        console.log({ marketplaceValidation });
 
         const validMarketplace = _get(marketplaceValidation, "value", null);
         const marketplaceValidationError = _get(
@@ -224,8 +225,9 @@ module.exports = async () => {
       removeRedisKey(`project:${projectName}`)
     );
 
+    // SKIP docusautus update
     // insert readme
-    await createDocumentation(marketplaceLists);
+    // await createDocumentation(marketplaceLists);
 
     // insert projects
     const projectInsertPromises = marketplaceLists.map((list) => {
