@@ -9,6 +9,18 @@ To start the API run the following command:
 - `docker-compose up -d`
 - `npm run dev` or `npm start`
 
+To Deploy to Heroku after adding changes
+
+- `git add -A`
+- `git commit -m 'message'`
+
+Pushing to master will deploy the app to staging:
+
+- `git push origin master`
+
+To deploy to production on Heroku promote the staging app: https://devcenter.heroku.com/articles/pipelines#promoting
+
+
 ## CI
 
 ### Setup
