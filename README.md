@@ -20,6 +20,7 @@ Pushing to master will deploy the app to staging:
 
 To deploy to production on Heroku promote the staging app: https://devcenter.heroku.com/articles/pipelines#promoting
 
+If test are breaking the db can be reset by running `docker-compose down` followed by `docker-compose up -d`.
 
 ## CI
 
