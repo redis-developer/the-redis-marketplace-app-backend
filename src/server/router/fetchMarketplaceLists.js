@@ -361,7 +361,7 @@ module.exports = async () => {
       ...marketplaceTagPromises,
     ]);
 
-    // logger.info(marketplaceLists, `The followig projects were saved to db:`);
+    logger.info(marketplaceLists, `The followig projects were saved to db:`);
     return marketplaceLists;
   }
 
