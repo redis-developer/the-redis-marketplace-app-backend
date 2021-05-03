@@ -1,4 +1,12 @@
-const { get: _get, omit: _omit, difference: _difference } = require("lodash");
+const {
+  get: _get,
+  omit: _omit,
+  difference: _difference,
+  size: _size,
+  uniq: _uniq,
+  toLower: _toLower,
+  pullAll: _pullAll,
+} = require("lodash");
 const gitHubGraphQlClient = require("../models/gitHub");
 const logger = require("../../logger");
 const {
@@ -139,8 +147,6 @@ module.exports = async () => {
           joiOptions
         );
 
-        console.log({ marketplaceValidation });
-
         const validMarketplace = _get(marketplaceValidation, "value", null);
         const marketplaceValidationError = _get(
           marketplaceValidation,
@@ -234,7 +240,7 @@ module.exports = async () => {
       const { repoName } = list;
 
       const projectsToCreate = _difference(marketplaceRepos, dbProjects);
-      logger.info({ projectsToCreate });
+      // logger.info({ projectsToCreate });
 
       const projectHash = `project:${repoName}`;
 
@@ -275,8 +281,6 @@ module.exports = async () => {
         projectKeysValuePairs.push("__score", 1);
       }
 
-      logger.info({ mappedList });
-
       return hSet(projectHash, projectKeysValuePairs);
     });
 
@@ -289,7 +293,7 @@ module.exports = async () => {
       ftSugAdd(`${dictionaryPrefix}:description`, list.description, 1)
     );
 
-    // insert tags
+    // update tags
     const tagKeys = [
       "redis_commands",
       "redis_features",
@@ -297,28 +301,53 @@ module.exports = async () => {
       "special_tags",
       "verticals",
     ];
-
-    const redisCommandPromises = [];
+    const marketplaceTagPromises = [];
     /* eslint-disable no-restricted-syntax */
     for (const tag of tagKeys) {
+      // get tags from db
       const tagList = await getRedisList(tag);
-      const marketPlaceReidsCommands = marketplaceLists.flatMap((list) =>
+
+      // collect tags from repos
+      const marketPlaceTags = marketplaceLists.flatMap((list) =>
         _get(list, tag, [])
       );
-      const redisCommandsToAdd = _difference(marketPlaceReidsCommands, tagList);
-      const redisCommandsToRemove = _difference(
+
+      // get unique tags
+      let uniqueMarketPlaceTags = _uniq(marketPlaceTags);
+
+      // filter lowercase duplicates for certain tags
+      if (["redis_features", "verticals"].includes(tag)) {
+        const lowerCase = uniqueMarketPlaceTags.map(_toLower);
+
+        const bucket = [];
+        const duplicate = [];
+        lowerCase.forEach((item) => {
+          if (bucket.includes(item)) {
+            duplicate.push(item);
+          }
+          bucket.push(item);
+        });
+
+        uniqueMarketPlaceTags = _pullAll(uniqueMarketPlaceTags, duplicate);
+      }
+
+      // compate repos to db
+      const marketplaceTagsToAdd = _difference(uniqueMarketPlaceTags, tagList);
+      const marketplaceTagsToRemove = _difference(
         tagList,
-        marketPlaceReidsCommands
-      );
-      const rPushPromises = redisCommandsToAdd.map(
-        (command) => command.length && rPush(tag, command)
+        uniqueMarketPlaceTags
       );
 
-      const lRemPromises = redisCommandsToRemove.map(
-        (command) => command.length && removeFromRedisList(tag, command)
+      // add and remove
+      const rPushPromises = marketplaceTagsToAdd.map(
+        (item) => _size(item) && rPush(tag, item)
       );
 
-      redisCommandPromises.push(...rPushPromises, ...lRemPromises);
+      const lRemPromises = marketplaceTagsToRemove.map(
+        (item) => _size(item) && removeFromRedisList(tag, item)
+      );
+
+      marketplaceTagPromises.push(...rPushPromises, ...lRemPromises);
     }
 
     logger.info(`Inserting ${marketplaceLists.length} projects to db.`);
@@ -329,10 +358,10 @@ module.exports = async () => {
       ...projectInsertPromises,
       ...appNameDictionaryPromises,
       ...descriptionDictionaryPromises,
-      ...redisCommandPromises,
+      ...marketplaceTagPromises,
     ]);
 
-    logger.info(marketplaceLists, `The followig projects were saved to db:`);
+    // logger.info(marketplaceLists, `The followig projects were saved to db:`);
     return marketplaceLists;
   }
 
