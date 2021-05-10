@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  import:
     env: ${{ secrets }}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -29,28 +29,30 @@ jobs:
         with:
           path: backend-repo
 
-      - name: Checkout docusaurus repo
-        uses: actions/checkout@v2
-        with:
-          # repository: redis-developer/redis-developer.github.io
-          # temporary fork
-          repository: RisingStack/redis-developer.github.io 
-          path: ${{ env.DOCUSAURUS_REPOSITORY }}
-          token: ${{ env.PERSONAL_ACCESS_TOKEN_GITHUB }}
-          # for testing
-          # ref: feat/marketplace-docs
+# DOCUSAURUS integration removed
+#       - name: Checkout docusaurus repo
+#         uses: actions/checkout@v2
+#         with:
+#           # repository: redis-developer/redis-developer.github.io
+#           # temporary fork
+#           repository: RisingStack/redis-developer.github.io 
+#           path: ${{ env.DOCUSAURUS_REPOSITORY }}
+#           token: ${{ env.PERSONAL_ACCESS_TOKEN_GITHUB }}
+#           # for testing
+#           # ref: feat/marketplace-docs
 
       - name: Setup nodejs
         uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - name: Prepare repos
-        run: |
-          # remove old documentation
-          rm -rfv $DOCUSAURUS_REPOSITORY/docs/marketplace
-          # empty sidebar config
-          echo "[]" > $DOCUSAURUS_REPOSITORY/marketplace-sidebar.json
+# DOCUSAURUS integration removed
+#       - name: Prepare repos
+#         run: |
+#           # remove old documentation
+#           rm -rfv $DOCUSAURUS_REPOSITORY/docs/marketplace
+#           # empty sidebar config
+#           echo "[]" > $DOCUSAURUS_REPOSITORY/marketplace-sidebar.json
 
       - name: Run script
         run: |
@@ -58,20 +60,22 @@ jobs:
           npm ci
           npm run crawler
 
-      - name: Commit changes
-        run: |
-          cd $DOCUSAURUS_REPOSITORY
-          # configure git and commit changes
-          git config --global user.email "info@risingstack.com"
-          git config --global user.name "RisingBot"
-          git diff
-          git add -A
-          git commit -m 'RisingBot: Generate Marketplace readme' || true
+# DOCUSAURUS integration removed
+#       - name: Commit changes
+#         run: |
+#           cd $DOCUSAURUS_REPOSITORY
+#           # configure git and commit changes
+#           git config --global user.email "info@risingstack.com"
+#           git config --global user.name "RisingBot"
+#           git diff
+#           git add -A
+#           git commit -m 'RisingBot: Generate Marketplace readme' || true
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          directory: ${{ env.DOCUSAURUS_REPOSITORY }}
-          github_token: ${{ env.PERSONAL_ACCESS_TOKEN_GITHUB }}
-          repository: RisingStack/redis-developer.github.io
-          branch: master
+# DOCUSAURUS integration removed
+#       - name: Push changes
+#         uses: ad-m/github-push-action@master
+#         with:
+#           directory: ${{ env.DOCUSAURUS_REPOSITORY }}
+#           github_token: ${{ env.PERSONAL_ACCESS_TOKEN_GITHUB }}
+#           repository: RisingStack/redis-developer.github.io
+#           branch: master
