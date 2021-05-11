@@ -39,6 +39,29 @@ https://dashboard.heroku.com/apps/marketplace-backend-production/activity
 
 ### Setup
 
+### GitHub Actions
+
+The cronjob is a GitHub action workflow which is defined in the `.github` folder. It reqires the same env variables as the `production` app. These are configured in this repository at `Settings > Secretes`.
+
+![image](https://user-images.githubusercontent.com/6561205/117833839-f7e81800-b276-11eb-9b14-f88add200c3c.png)
+
+Actions need to be enabled in the repo at `Setting > Actions`
+
+![image](https://user-images.githubusercontent.com/6561205/117833918-06363400-b277-11eb-973c-4024e0fc1dea.png)
+
+The workflow can be manged at the `Actions` tab.
+
+![image](https://user-images.githubusercontent.com/6561205/117833965-12ba8c80-b277-11eb-82c7-abb83adf2697.png)
+
+### Configuring Heroku variables
+
+Thes variables need to be configured in each heroku app respectively (staging and production) at `[App Name] > Setting > Config Vars > Reveal Config Vars`.
+
+https://dashboard.heroku.com/apps/marketplace-backend-production/settings
+
+![image](https://user-images.githubusercontent.com/6561205/117833455-a63f8d80-b276-11eb-96e7-df88cb64f1cd.png)
+
+
 #### Project secrets
 
 These secrets need to be set on the project level for the job to run.
@@ -73,6 +96,7 @@ Variables:
 
 - `username`: The user the personal access token belogns to
 - `personal_access_token`: A GitHub token
+
 
 
 ## OpenAPI documentation
