@@ -50,20 +50,14 @@ These secrets need to be set on the project level for the job to run.
   - GITHUB_GRAPHQL_URL: https://api.github.com/graphql
   - CRAWLER_LOGIN_NAME: Login name of the organisation to crawl.
 
-#### Docusaurus readme update based on https://github.com/RisingStack/redis-developer.github.io
+### Trigger crawler on GitHub
 
-These are the changes and concepts to the docusaurus repository necessary for the crawler to work:
+The workflow can be manually triggered from the `Action` tab on the GitHub repository.
 
-  - a `marketplace-sidebar.json` file in the project root
-  - `marketplace-sidebar.json` required in the `sidebars.js` file
-  - an entry to the `src/pages/index.js` file to create a link to the `marketplace` folder that the updater script creates
+https://github.com/redis-developer/the-redis-marketplace-app-backend/actions/workflows/main.yml
 
-The updater flow:
+![image](https://user-images.githubusercontent.com/6561205/117832289-a55a2c00-b275-11eb-8b61-32923fc161ac.png)
 
-  - the script creates a `marketplace` folder in `docs` and places the readme contents in `mdx` files with the appropriate headers into a simple structure like the `create` folder
-  - the corresponding sidebar entries will be added to the `marketplace-sidebar.json` file
-
-If there are no projects to document the `marketplace-sidebar.json` will contain an empty array, but it must exist. The link created on the index site will however not point to any documents in this solution, if no projects were included.
 
 ### Trigger crawler with `POST` request
 
