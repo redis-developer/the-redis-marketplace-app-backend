@@ -1,13 +1,10 @@
-## How to start the API
+## Development
 
----
+1. `npm ci`
+2. `cp .env.example .env` values explained at [Project Secrets](#project-secrets)
+3. `docker-compose up -d --build` (In order to have a local redis image running. The `--build` flag triggers scripts in the docker file to insert seed data and configure indexing for the redis module.)
+4. `npm run dev`
 
-To start the API run the following command:
-
-- `npm ci`
-- `docker-compose build`
-- `docker-compose up -d`
-- `npm run dev` or `npm start`
 
 To Deploy to Heroku after adding changes
 
@@ -19,6 +16,13 @@ Pushing to master will deploy the app to staging:
 - `git push origin master`
 
 To deploy to production on Heroku promote the staging app: https://devcenter.heroku.com/articles/pipelines#promoting
+
+Go to the pipeline dashboard: https://dashboard.heroku.com/pipelines/2e2b10cb-20ff-4c34-ad0a-9f58f3dfd600.
+
+If there are changes to be deployed to production a `Promote to production` button will be visible on the staging app. Pushing it will copy the build to production.
+ 
+![image](https://user-images.githubusercontent.com/6561205/117830410-e3565080-b273-11eb-84ad-b82134b0972a.png)
+
 
 If test are breaking the db can be reset by running `docker-compose down` followed by `docker-compose up -d`.
 
