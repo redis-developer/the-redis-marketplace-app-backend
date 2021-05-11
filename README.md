@@ -26,6 +26,15 @@ If there are changes to be deployed to production a `Promote to production` butt
 
 If test are breaking the db can be reset by running `docker-compose down` followed by `docker-compose up -d`.
 
+## Rollback
+
+If an needs to be reverted to a previose commit a specific build can be selected from the `Activity` tab and pressing `Roll back to here` will revert it.
+
+https://dashboard.heroku.com/apps/marketplace-backend-production/activity
+
+![image](https://user-images.githubusercontent.com/6561205/117831848-44caef00-b275-11eb-9e74-4385562fcde9.png)
+
+
 ## CI
 
 ### Setup
