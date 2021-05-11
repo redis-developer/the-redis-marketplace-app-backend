@@ -1,3 +1,7 @@
+
+- staging: https://marketplace-backend-staging-a.herokuapp.com/
+- production: https://marketplace-backend-production.herokuapp.com/
+
 ## Development
 
 1. `npm ci`
