@@ -5,8 +5,8 @@
 ## Development
 
 1. `npm ci`
-2. `cp .env.example .env` values explained at [Project Secrets](#project-secrets)
-3. `docker-compose up -d --build` (In order to have a local redis image running. The `--build` flag triggers scripts in the docker file to insert seed data and configure indexing for the redis module.)
+2. `cp .env.example .env` values explained at [Project Secrets](#project-secrets)git
+3.  Connect to a redis instance by setting `REDIS_CONNECTION_STRING` to a valid connection string. (Optionally `docker-compose up -d --build` can be used to create a lcoal instance. In order to have a local redis image running. The `--build` flag triggers scripts in the docker file to insert seed data and configure indexing for the redis module.)
 4. `npm run dev`
 
 
