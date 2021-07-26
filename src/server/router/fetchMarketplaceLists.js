@@ -31,7 +31,7 @@ const {
   joiUriRequired,
   joiUriNullable,
   joiArrayNullable,
-  joiInteger,
+  joiStringOrInteger,
 } = joiSchemas;
 
 const { escapeQueryString } = require("../../utils");
@@ -89,7 +89,7 @@ module.exports = async () => {
     verticals: joiArrayNullable([joiStringNullabe]),
     markdown: joiUriRequired,
     hidden: joiBoolean,
-    rank: joiInteger,
+    rank: joiStringOrInteger,
   });
 
   let after = null;
@@ -272,7 +272,7 @@ module.exports = async () => {
           verticals: _get(list, "verticals", [])
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
-          rank: list.rank || 10000000,
+          rank: +list.rank || 10000000,
         },
         "repoName"
       );

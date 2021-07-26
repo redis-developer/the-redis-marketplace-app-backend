@@ -8,6 +8,10 @@ const joiStringRequired = joiString.required();
 const joiUriRequired = joiString.uri().required();
 const joiUriNullable = joiString.uri().allow(null, "");
 const joiBoolean = joi.boolean();
+const joiStringOrInteger = joi.alternatives(
+  joi.string(),
+  joi.number().integer()
+);
 const joiInteger = joi.number().integer();
 const joiIntegerRequired = joiInteger.required();
 const joiEnum = (enumValues) => joiString.valid(...enumValues);
@@ -40,4 +44,5 @@ module.exports = {
   joiArrayNullable,
   joiArrayRequired,
   joiInteger,
+  joiStringOrInteger,
 };

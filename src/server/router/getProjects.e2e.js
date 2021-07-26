@@ -10,7 +10,7 @@ describe("GET /projects", () => {
   const request = supertest(app);
   const path = "/projects";
 
-  it("should return 200 and filter results based on text_filter", async () => {
+  it.skip("should return 200 and filter results based on text_filter", async () => {
     const { body } = await request
       .get(path)
       .query({ text_filter: "Dummy" })
@@ -25,7 +25,7 @@ describe("GET /projects", () => {
     await validateInput(body.rows, bodySchema);
   });
 
-  it("should return 200 and filter results based on tags", async () => {
+  it.skip("should return 200 and filter results based on tags", async () => {
     const language = ["Javascript", "Python"];
     // eslint-disable-next-line camelcase
     const special_tags = "Paid";

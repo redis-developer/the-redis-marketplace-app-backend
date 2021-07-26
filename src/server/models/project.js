@@ -21,7 +21,7 @@ const listProjects = async ({ filter, sort, highlight, limit, offset }) => {
     })
   );
   const { rows, ...rest } = functionResponse;
-  console.log(rows);
+
   const formatedRows = db.formatQueryResult(rows, [], projectArrayFields);
   return { ...rest, executeTime, rows: formatedRows };
 };
