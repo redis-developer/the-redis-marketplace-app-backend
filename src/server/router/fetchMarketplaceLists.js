@@ -89,6 +89,7 @@ module.exports = async () => {
     verticals: joiArrayNullable([joiStringNullabe]),
     markdown: joiUriRequired,
     hidden: joiBoolean,
+    featured: joiBoolean,
     rank: joiStringOrInteger,
   });
 
@@ -364,7 +365,7 @@ module.exports = async () => {
       ...marketplaceTagPromises,
     ]);
 
-    logger.info(marketplaceLists, `The followig projects were saved to db:`);
+    logger.info(marketplaceLists, `The following projects were saved to db:`);
     return marketplaceLists;
   }
 
