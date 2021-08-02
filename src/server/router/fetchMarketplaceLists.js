@@ -32,6 +32,7 @@ const {
   joiUriNullable,
   joiArrayNullable,
   joiStringOrInteger,
+  joiString,
 } = joiSchemas;
 
 const { escapeQueryString } = require("../../utils");
@@ -91,6 +92,7 @@ module.exports = async () => {
     hidden: joiBoolean,
     featured: joiBoolean,
     rank: joiStringOrInteger,
+    preview_image_url: joiString,
   });
 
   let after = null;
@@ -99,6 +101,9 @@ module.exports = async () => {
   let page = 1;
   const first = 100;
   let totalCount;
+
+  // const invalidRepos = [];
+  // const hiddenRepos = [];
 
   while (hasNextPage) {
     /* eslint-disable no-await-in-loop */
@@ -115,6 +120,7 @@ module.exports = async () => {
     );
 
     repoEdges.forEach((repoEdge) => {
+      console.log("Running a repo ---------------------------------");
       const repoName = _get(repoEdge, "node.name", null);
 
       const marketplaceJsonString = _get(repoEdge, "node.object.text", null);
@@ -369,6 +375,6 @@ module.exports = async () => {
     return marketplaceLists;
   }
 
-  logger.warn("Redis connection fialed!");
+  logger.warn("Redis connection failed!");
   throw Error("Unable to connect to redis!");
 };
