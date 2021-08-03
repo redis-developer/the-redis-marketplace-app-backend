@@ -32,6 +32,7 @@ const getProjectsHandler = async (req, res, next) => {
       redis_features: joiArrayNullable([joiString]),
       special_tags: joiArrayNullable([joiString]),
       redis_modules: joiArrayNullable([joiString]),
+      featured: joiString,
     });
 
     const {
@@ -41,6 +42,7 @@ const getProjectsHandler = async (req, res, next) => {
       limit,
       highlight,
       text_filter: textFilter,
+      featured,
       ...tagParams
     } = await validateInput(req.query, queryParamSchema, {
       convert: true,
@@ -55,6 +57,9 @@ const getProjectsHandler = async (req, res, next) => {
     if (textFilter) {
       const queryText = `'${escapeQueryString(textFilter)}*'`;
       filter.push(queryText);
+    }
+    if (featured) {
+      filter.push(`@featured:true`);
     }
 
     const tagFilters = _map(

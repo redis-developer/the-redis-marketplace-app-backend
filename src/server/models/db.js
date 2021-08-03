@@ -66,7 +66,7 @@ const asyncFtSearch = async (
     searchParams.push(sort.field);
     searchParams.push(sort.direction || "ASC");
   }
-
+  console.log(searchParams.join(" "));
   const searchResult = await client.ftSearch(searchParams);
   const [totalResults, ...rows] = searchResult;
 

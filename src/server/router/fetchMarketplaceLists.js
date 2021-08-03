@@ -280,6 +280,7 @@ module.exports = async () => {
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
           rank: +list.rank || 10000000,
+          featured: escapeQueryString(list.featured),
         },
         "repoName"
       );
