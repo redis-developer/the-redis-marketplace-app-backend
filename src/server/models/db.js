@@ -69,7 +69,7 @@ const asyncFtSearch = async (
   console.log(searchParams.join(" "));
   const searchResult = await client.ftSearch(searchParams);
   const [totalResults, ...rows] = searchResult;
-
+  console.log(rows);
   return { totalResults, offset: offsetValue, limit: limitValue, rows };
 };
 

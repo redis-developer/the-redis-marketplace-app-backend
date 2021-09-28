@@ -117,13 +117,13 @@ The marketplace consists of two major components: a React frontend, which displa
 
 ### Creating the metadata
 
-The metadata of each sample application is stored as a [Redis Hash](https://redis.io/topics/data-types). Hashes are maps between string fields and string values, so they are the perfect data type to represent objects. Each hashes' id is prefixed with the `project:` phrase. This way, these values can be indexed easily using RediSearch. A sample is added to the Redis DB using the [FT.CREATE](https://oss.redislabs.com/redisearch/Commands/#ftcreate) command:
+The metadata of each sample application is stored as a [Redis Hash](https://redis.io/topics/data-types). Hashes are maps between string fields and string values, so they are the perfect data type to represent objects. Each hashes' id is prefixed with the `project:` phrase. This way, these values can be indexed easily using RediSearch. A sample is added to the Redis DB using the [FT.CREATE](https://oss.redis.com/redisearch/Commands/#ftcreate) command:
 
 ```
 HSET "project:1" app_name "Querying with Redisearch" description "Redisearch implements a secondery index on top of Redis\\, but unlike other Redis indexing libraries\\, it does not use internal data structures like sorted sets\\." type "Building Block" contributed_by "Redis Labs" redis_commands "FT\\.SEARCH, FT\\.SUGGET"...
 ```
 
-Special characters like `,.<>{}[]"':;!@#$%^&*()-+=~ ` are escaped so we will be able to query terms with such characters. For more info on see [tokenization](https://oss.redislabs.com/redisearch/Escaping/#the_rules_of_text_field_tokenization) in the RediSearch documentation.
+Special characters like `,.<>{}[]"':;!@#$%^&*()-+=~ ` are escaped so we will be able to query terms with such characters. For more info on see [tokenization](https://oss.redis.com/redisearch/Escaping/#the_rules_of_text_field_tokenization) in the RediSearch documentation.
 
 ### Indexing the dataset
 
@@ -137,7 +137,7 @@ The `ON hash PREFIX 1 "project:"` tells the Redis DB to index each key with the 
 
 ### Querying the dataset
 
-The search API translates the frontend user queries into RediSearch queries. For this app, we used [prefix matching](https://oss.redislabs.com/redisearch/Query_Syntax/#prefix_matching). With prefix matching, RediSearch compares all terms in the index against the given prefix. If a user types “red” into the search form, the API will issue the prefix query `Red*`.
+The search API translates the frontend user queries into RediSearch queries. For this app, we used [prefix matching](https://oss.redis.com/redisearch/Query_Syntax/#prefix_matching). With prefix matching, RediSearch compares all terms in the index against the given prefix. If a user types “red” into the search form, the API will issue the prefix query `Red*`.
 
 With prefix matching, `Red*` will find many hits, including:
 
@@ -148,7 +148,7 @@ With prefix matching, `Red*` will find many hits, including:
 
 The search form will start displaying results for hits across all these terms as the user types. Then the `GET /projects` endpoint handles these requests. The endpoint support a list of query parameters, which will be parsed and converted into RediSearch syntax (See the Swagger documentation for more info).
 
-If the endpoint is called without any query parameter, the backend will query the DB with the [FT.SEARCH](https://oss.redislabs.com/redisearch/Commands/#ftsearch) command and `*` as query string, making sure all documents will be listed. A simple query looks the following way:
+If the endpoint is called without any query parameter, the backend will query the DB with the [FT.SEARCH](https://oss.redis.com/redisearch/Commands/#ftsearch) command and `*` as query string, making sure all documents will be listed. A simple query looks the following way:
 
 ```
 FT.SEARCH idx:project * WITHSCORES
@@ -156,7 +156,7 @@ FT.SEARCH idx:project * WITHSCORES
 
 The `WITHSCORES` flag is always added to the query. Optionally, using the limit and offset parameters, pagination is applied for the results utilizing the `LIMIT` flag. The default value for this flag is 0 10. Sorting by `app_name` and `description` is also possible thanks to the `SORTABLE` flag on these fields using the `sortBy` query parameter. Next to `sortBy` the `sortDirection` can also be provided. These two parameters are converted to the following RediSearch syntax: `SORTBY {field} [ASC|DESC]`. By default, projects are sorted by their score.
 
-Specific field query parameters take an Array of String as an argument. This way, it is possible to filter a particular field. These parameters are parsed based on the [query syntax](https://oss.redislabs.com/redisearch/Query_Syntax/). So the following request:
+Specific field query parameters take an Array of String as an argument. This way, it is possible to filter a particular field. These parameters are parsed based on the [query syntax](https://oss.redis.com/redisearch/Query_Syntax/). So the following request:
 
 ```
 GET http://localhost:3000/projects?redis_commands=FT.SEARCH&contributed_by=Redis Labs&language=Javascript&language=Python
@@ -168,9 +168,9 @@ will result in the following RediSearch query:
 FT.SEARCH idx:project "@redis_commands:FT\.SEARCH @contributed_by:Redis Labs @language:Javascript | Python" WITHSCORES
 ```
 
-All punctuation marks and whitespaces (besides underscores) separate the document and queries into tokens. The `.` in the `FT.SEARCH` phrase hence is escaped based on the rules of [tokenization](https://oss.redislabs.com/redisearch/Escaping/). The terms separated with `|` will result in an OR condition, while the relation between the different field queries will be an AND condition. So the query above will return all hashes which language is either (`Javascript` OR `Python`) AND `FT.SEARCH` is included in their `redis_commands` field AND contributed by `Redis Labs`.
+All punctuation marks and whitespaces (besides underscores) separate the document and queries into tokens. The `.` in the `FT.SEARCH` phrase hence is escaped based on the rules of [tokenization](https://oss.redis.com/redisearch/Escaping/). The terms separated with `|` will result in an OR condition, while the relation between the different field queries will be an AND condition. So the query above will return all hashes which language is either (`Javascript` OR `Python`) AND `FT.SEARCH` is included in their `redis_commands` field AND contributed by `Redis Labs`.
 
-The Backend also supports a `text_filter` query param which handles autocompletion. First, it's value is escaped based on the [text field tokenization](https://oss.redislabs.com/redisearch/Escaping/#the_rules_of_text_field_tokenization) rule. Then an `*` is added to the term to enable prefix matching. At last, following request:
+The Backend also supports a `text_filter` query param which handles autocompletion. First, it's value is escaped based on the [text field tokenization](https://oss.redis.com/redisearch/Escaping/#the_rules_of_text_field_tokenization) rule. Then an `*` is added to the term to enable prefix matching. At last, following request:
 
 ```
 GET http://localhost:3000/projects?text_filter=Redi

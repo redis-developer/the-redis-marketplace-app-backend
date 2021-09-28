@@ -62,10 +62,8 @@ const getProjectsHandler = async (req, res, next) => {
       filter.push(`@featured:true`);
     }
 
-    const tagFilters = _map(
-      tagParams,
-      (values, key) =>
-        `@${key}:${values.map((value) => escapeQueryString(value)).join(" | ")}`
+    const tagFilters = _map(tagParams, (values, key) =>
+      values.map((value) => `(@${key}:${escapeQueryString(value)})`).join("|")
     );
 
     const projects = await listProjects({

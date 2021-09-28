@@ -263,7 +263,9 @@ module.exports = async () => {
           quick_deploy: escapeQueryString(list.quick_deploy),
           deploy_buttons: JSON.stringify(list.deploy_buttons),
           app_image_urls: JSON.stringify(list.app_image_urls),
-          language: escapeQueryString(list.language.join(redisArrayDelimiter)),
+          language: list.language
+            .map(escapeQueryString)
+            .join(redisArrayDelimiter),
           redis_commands: _get(list, "redis_commands", [])
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
