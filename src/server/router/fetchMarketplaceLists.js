@@ -36,7 +36,6 @@ const {
 } = joiSchemas;
 
 const { escapeQueryString } = require("../../utils");
-// const createDocumentation = require("./createDocumentation");
 const { joiBoolean } = require("../../validation/joiSchemas");
 const { crawlerLoginName } = require("../../config/gitHubConfig");
 
@@ -242,7 +241,6 @@ module.exports = async () => {
 
     // SKIP docusautus update
     // insert readme
-    // await createDocumentation(marketplaceLists);
 
     // insert projects
     const projectInsertPromises = marketplaceLists.map((list) => {
