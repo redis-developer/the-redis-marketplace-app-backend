@@ -2,7 +2,7 @@
 
 name: CRAWLER
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   schedule:
@@ -24,7 +24,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout backend repo 
+      - name: Checkout backend repo
         uses: actions/checkout@v2
         with:
           path: backend-repo
@@ -35,7 +35,7 @@ jobs:
 #         with:
 #           # repository: redis-developer/redis-developer.github.io
 #           # temporary fork
-#           repository: RisingStack/redis-developer.github.io 
+#           repository: RisingStack/redis-developer.github.io
 #           path: ${{ env.DOCUSAURUS_REPOSITORY }}
 #           token: ${{ env.PERSONAL_ACCESS_TOKEN_GITHUB }}
 #           # for testing
@@ -44,7 +44,7 @@ jobs:
       - name: Setup nodejs
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '18'
 
 # DOCUSAURUS integration removed
 #       - name: Prepare repos
