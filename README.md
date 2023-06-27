@@ -24,7 +24,7 @@ To deploy to production on Heroku promote the staging app: https://devcenter.her
 Go to the pipeline dashboard: https://dashboard.heroku.com/pipelines/2e2b10cb-20ff-4c34-ad0a-9f58f3dfd600.
 
 If there are changes to be deployed to production a `Promote to production` button will be visible on the staging app. Pushing it will copy the build to production.
- 
+
 ![image](https://user-images.githubusercontent.com/6561205/117830410-e3565080-b273-11eb-84ad-b82134b0972a.png)
 
 
@@ -130,10 +130,10 @@ Special characters like `,.<>{}[]"':;!@#$%^&*()-+=~ ` are escaped so we will be 
 Before we can handle any search queries, we need to index the sample applications. To do this, we use a RediSearch index definition that contains all of the fields we’ll use to search. RediSearch indexes stay in sync with Hashes in your Redis database. The index definition is created using the following command:
 
 ```
-FT.CREATE idx:project ON hash PREFIX 1 "project:" SCORE_FIELD __score SCHEMA app_name TEXT WEIGHT 10 SORTABLE description TEXT SORTABLE type TEXT contributed_by TEXT quick_deploy TEXT language TEXT redis_commands TEXT WEIGHT 1.5 redis_features TEXT WEIGHT 1.5 redis_modules TEXT WEIGHT 1.5 special_tags TEXT verticals TEXT rank NUMERIC featured TEXT preview_image_url TEXT
+FT.CREATE idx:project ON hash PREFIX 1 "project:" SCORE_FIELD __score SCHEMA app_name TEXT WEIGHT 10 SORTABLE description TEXT SORTABLE type TEXT contributed_by TEXT quick_deploy TEXT language TEXT redis_commands TEXT WEIGHT 1.5 redis_features TEXT WEIGHT 1.5 redis_use_cases TEXT WEIGHT 1.5 special_tags TEXT verticals TEXT rank NUMERIC featured TEXT preview_image_url TEXT
 ```
 
-The `ON hash PREFIX 1 "project:"` tells the Redis DB to index each key with the `project:` prefix. The `SCORE_FIELD` flag indicates the document field that should be used as an additional weight since RediSearch will multiply the final relevance value of that document in a search query by the `__score` field. This way a document's rank in queries can be altered based on the users' ranking. After the `SCHEMA` keyword, the index fields are defined. Each field is defined as `TEXT`. This way, we can run a full-text search on the indexed fields. It comes in handy for autocompletion since a phrase a user types will be queried against the entire dataset, ensuring that Backend returns each project, which may be relevant. To guarantee that queries consider hits in specific fields more relevant, some fields are given a higher weight than the default `1`. For this reason, `app_name` weights `10`, and `redis_features`, `redis_modules`, and `redis_commands` weights `1.5`.
+The `ON hash PREFIX 1 "project:"` tells the Redis DB to index each key with the `project:` prefix. The `SCORE_FIELD` flag indicates the document field that should be used as an additional weight since RediSearch will multiply the final relevance value of that document in a search query by the `__score` field. This way a document's rank in queries can be altered based on the users' ranking. After the `SCHEMA` keyword, the index fields are defined. Each field is defined as `TEXT`. This way, we can run a full-text search on the indexed fields. It comes in handy for autocompletion since a phrase a user types will be queried against the entire dataset, ensuring that Backend returns each project, which may be relevant. To guarantee that queries consider hits in specific fields more relevant, some fields are given a higher weight than the default `1`. For this reason, `app_name` weights `10`, and `redis_features`, `redis_use_cases`, and `redis_commands` weights `1.5`.
 
 ### Querying the dataset
 
@@ -191,7 +191,7 @@ The endpoint also supports a `highlight` query param, which adds the `HIGHLIGH` 
   "id": "project:4",
   "score": "2.75",
   "type": "Full App",
-  "redis_modules": ["Redisearch", "RedisJSON"],
+  "redis_features": ["Search", "JSON"],
   "download_url": "https://github.com/redis-developer/basic-caching-demo-nodejs/archive/main.zip",
   "markdown": "https://raw.githubusercontent.com/redislabs-training/redis-sitesearch/master/README.md",
   "verticals": ["Real estate"],
@@ -205,7 +205,7 @@ The endpoint also supports a `highlight` query param, which adds the `HIGHLIGH` 
   "app_image_urls": [
     "https://github.com/redis-developer/basic-caching-demo-nodejs/blob/main/docs/screenshot001.png?raw=true"
   ],
-  "redis_features": ["caching", "search"],
+  "redis_use_cases": ["caching", "search"],
   "description": "<b>RedisGraph</b> is the first queryable Property Graph database to use sparse matrices to represent the adjacency matrix in graphs and linear algebra to query the graph.",
   "app_name": "<b>RedisGraph</b>, Based on the Property Graph Model",
   "deploy_buttons": [

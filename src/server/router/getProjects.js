@@ -31,7 +31,7 @@ const getProjectsHandler = async (req, res, next) => {
       redis_commands: joiArrayNullable([joiString]),
       redis_features: joiArrayNullable([joiString]),
       special_tags: joiArrayNullable([joiString]),
-      redis_modules: joiArrayNullable([joiString]),
+      redis_use_cases: joiArrayNullable([joiString]),
       featured: joiString,
     });
 

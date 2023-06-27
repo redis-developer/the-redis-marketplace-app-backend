@@ -54,7 +54,7 @@ const router = new Router();
  *         type: array
  *         items:
  *           type: string
- *       redis_features:
+ *       redis_use_cases:
  *         type: string
  *         items:
  *           type: string
@@ -64,13 +64,13 @@ const router = new Router();
  *           type: string
  *   Filter:
  *    properties:
- *      redis_modules:
+ *      redis_features:
  *        type: string
  *      redis_commands:
  *        type: array
  *        items:
  *          type: string
- *      redis_features:
+ *      redis_use_cases:
  *        type: array
  *        items:
  *          type: string
@@ -191,8 +191,8 @@ const router = new Router();
  *            - type: array
  *              items:
  *                type: string
- *      - name: redis_features
- *        description: Filters the returned projects by redis_features.
+ *      - name: redis_use_cases
+ *        description: Filters the returned projects by redis_use_cases.
  *        in: query
  *        required: false
  *        schema:
@@ -211,8 +211,8 @@ const router = new Router();
  *            - type: array
  *              items:
  *                type: string
- *      - name: redis_modules
- *        description: Filters the returned projects by redis_modules.
+ *      - name: redis_features
+ *        description: Filters the returned projects by redis_features.
  *        in: query
  *        required: false
  *        schema:

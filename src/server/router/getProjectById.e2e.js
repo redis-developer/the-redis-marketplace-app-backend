@@ -13,7 +13,7 @@ describe("GET /project/:id", () => {
     // project.expect(200, {
     //   id: "project:1",
     //   type: "Building Block",
-    //   redis_modules: ["Redisearch"],
+    //   redis_features: ["Search and Query"],
     //   download_url:
     //     "https://github.com/redis-developer/basic-caching-demo-nodejs/archive/main.zip",
     //   markdown:
@@ -30,7 +30,7 @@ describe("GET /project/:id", () => {
     //     "https://github.com/redis-developer/basic-caching-demo-nodejs/blob/main/docs/screenshot001.png?raw=true",
     //   ],
     //   __score: 1,
-    //   redis_features: ["caching"],
+    //   redis_use_cases: ["caching"],
     //   description:
     //     "RediSearch is a source available Secondary Index, Query Engine and Full-Text Search over Redis, developed by Redis Labs.",
     //   app_name: "A Redisearch App",

@@ -11,15 +11,13 @@ describe("GET /projects/filters", () => {
     const { body } = await request.get(path).expect(200);
     console.log(body);
     // expect(body).to.eql({
-    //   redis_modules: [
+    //   redis_features: [
     //     "Redis",
-    //     "Redisearch",
-    //     "RedisJSON",
-    //     "RedisGraph",
-    //     "RedisAI",
+    //     "Search and Query",
+    //     "JSON"
     //   ],
     //   redis_commands: ["FT.SEARCH", "FT.SUGADD", "FT.SUGGET", "HGETALL"],
-    //   redis_features: ["caching", "search", "query", "autocomplete"],
+    //   redis_use_cases: ["caching", "search", "query", "autocomplete"],
     //   special_tags: ["Hackathon", "Paid"],
     //   verticals: [
     //     "Healthcare",
