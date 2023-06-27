@@ -82,8 +82,8 @@ module.exports = async () => {
     deploy_buttons: joiArrayNullable([]),
     language: joiArrayNullable([joiStringNullabe]),
     redis_commands: joiArrayNullable([joiStringNullabe]),
+    redis_use_cases: joiArrayNullable([joiStringNullabe]),
     redis_features: joiArrayNullable([joiStringNullabe]),
-    redis_modules: joiArrayNullable([joiStringNullabe]),
     app_image_urls: joiArrayNullable([joiUriNullable]),
     youtube_url: joiUriNullable,
     special_tags: joiArrayNullable([joiStringNullabe]),
@@ -269,10 +269,10 @@ module.exports = async () => {
           redis_commands: _get(list, "redis_commands", [])
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
-          redis_features: _get(list, "redis_features", [])
+          redis_use_cases: _get(list, "redis_use_cases", [])
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
-          redis_modules: _get(list, "redis_modules", [])
+          redis_features: _get(list, "redis_features", [])
             .map(escapeQueryString)
             .join(redisArrayDelimiter),
           special_tags: _get(list, "special_tags", [])
@@ -309,8 +309,8 @@ module.exports = async () => {
     // update tags
     const tagKeys = [
       "redis_commands",
+      "redis_use_cases",
       "redis_features",
-      "redis_modules",
       "special_tags",
       "verticals",
     ];
@@ -329,7 +329,7 @@ module.exports = async () => {
       let uniqueMarketPlaceTags = _uniq(marketPlaceTags);
 
       // filter lowercase duplicates for certain tags
-      if (["redis_features", "verticals"].includes(tag)) {
+      if (["redis_use_cases", "verticals"].includes(tag)) {
         const lowerCase = uniqueMarketPlaceTags.map(_toLower);
 
         const bucket = [];
