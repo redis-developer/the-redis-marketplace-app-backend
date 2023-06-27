@@ -280,9 +280,9 @@ describe("Projects model file", () => {
 
       const filters = await reviredProjectModel.getProjectFilters();
       expect(filters).to.eql({
-        redis_features: ["Redis"],
+        redis_features: ["caching"],
         redis_commands: ["FT.SEARCH"],
-        redis_use_cases: ["caching"],
+        redis_use_cases: ["Redis"],
         special_tags: ["Paid"],
         verticals: ["Healthcare"],
       });
