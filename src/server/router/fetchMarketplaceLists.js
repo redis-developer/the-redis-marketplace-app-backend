@@ -119,7 +119,6 @@ module.exports = async () => {
     );
 
     repoEdges.forEach((repoEdge) => {
-      console.log("Running a repo ---------------------------------");
       const repoName = _get(repoEdge, "node.name", null);
 
       const marketplaceJsonString = _get(repoEdge, "node.object.text", null);

@@ -12,7 +12,7 @@ const app = express();
 const swaggerOptions = {
   swaggerDefinition: {
     info: {
-      title: "Redislabs Marketplace API",
+      title: "Redis Marketplace API",
       version: "1.0.0",
     },
   },
