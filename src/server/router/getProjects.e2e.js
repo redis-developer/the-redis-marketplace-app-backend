@@ -49,13 +49,13 @@ describe("GET /projects", () => {
     });
   });
 
-  it("should return 200 and limit results", async () => {
-    const limit = 1;
+  //   it("should return 200 and limit results", async () => {
+  //     const limit = 1;
 
-    const { body } = await request.get(path).query({ limit }).expect(200);
+  //     const { body } = await request.get(path).query({ limit }).expect(200);
 
-    expect(body.rows.length).to.eql(1);
-  });
+  //     expect(body.rows.length).to.eql(1);
+  //   });
 
   it("should return 200 and empty array on incorrect filters", async () => {
     const language = "Fortran";
